@@ -18,15 +18,23 @@ protected:
 
 	AMovablePlayerCharacter();
 
+	virtual void PostInitializeComponents() override;
+
+	UPROPERTY(EditAnywhere)
+		float LagSpeed;
 	UPROPERTY(EditAnywhere)
 	class USpringArmComponent* CameraBoom;
 
 	UPROPERTY(EditAnywhere)
-	class UCameraComponent* FollowCamera;
+		class UCameraComponent* FollowCamera;
+
+	UPROPERTY(EditAnywhere)
+		class UTimerComponent* TimerComponent;
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 	void MoveForward(float Value);
 
 	void MoveRight(float Value);
+	
 };
