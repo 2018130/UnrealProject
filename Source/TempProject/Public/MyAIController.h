@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "Perception/AIPerceptionTypes.h"
 #include "MyAIController.generated.h"
 
 /**
@@ -24,6 +25,11 @@ protected:
 
 	class UAISenseConfig_Sight* SenseConfig_Sight;
 	
-	UFUNCTION()
-		void OnPawnDetected(const TArray<AActor*>& DetectedPawn);
+	virtual void BeginPlay() override;
+
+	virtual void OnPossess(APawn* InPawn) override;
+
+//	UFUNCTION()
+//		void OnPawnDetected(AActor* Target, FAIStimulus Stimulus);
+	
 };

@@ -9,6 +9,13 @@
 /**
  * 
  */
+
+enum class EWeaponType
+{
+	RIFLE,
+	GRENADE,
+};
+
 UCLASS()
 class TEMPPROJECT_API AMovablePlayerCharacter : public AMovableCharacter
 {
@@ -21,7 +28,11 @@ protected:
 	virtual void PostInitializeComponents() override;
 
 	UPROPERTY(EditAnywhere)
+		class UAnimMontage* AttackMontage;
+	UPROPERTY(EditAnywhere)
 		float LagSpeed;
+	UPROPERTY(EditAnywhere)
+		float Range;
 	UPROPERTY(EditAnywhere)
 	class USpringArmComponent* CameraBoom;
 
@@ -31,10 +42,76 @@ protected:
 	UPROPERTY(EditAnywhere)
 		class UTimerComponent* TimerComponent;
 
+	UPROPERTY(EditAnywhere)
+		class UZoominComponent* ZoominComponent;
+
+	UPROPERTY(EditAnywhere)
+		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectType;
+
+	UPROPERTY(VisibleAnywhere)
+		int32 BulletCount = 0;
+
+	EWeaponType WeaponType;
+
+	int32 Money;
+
+	UPROPERTY(VisibleAnywhere)
+		float Damage;
+	
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 	void MoveForward(float Value);
 
 	void MoveRight(float Value);
-	
+
+	void PickUp();
+
+	UPROPERTY(EditAnywhere)
+		float ShootDelay;
+
+	FTimerHandle ShootTimerHandle;
+
+	UPROPERTY(EditDefaultsOnly)
+		UParticleSystem* ShootPointParticle;
+
+	UPROPERTY(EditAnywhere)
+		UTexture* ShootedPointTexture;
+
+	UPROPERTY(EditDefaultsOnly)
+		USoundWave* ShootSound;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class AWeapon_GrenadeActor> GrenadeActor;
+
+public:
+
+	virtual void Attack() override;
+
+	void StopAttack();
+
+	void Shoot();
+
+	USpringArmComponent* GetCameraBoom() { return CameraBoom; }
+
+	UCameraComponent* GetFollowCamera() { return FollowCamera; }
+
+	virtual void NotifyActorBeginOverlap(AActor* Otheractor) override;
+
+	virtual void NotifyActorEndOverlap(AActor* Otheractor) override;
+
+	void AddMoney(int32 Value);
+
+	void AddBullet(int32 Value);
+
+	void Shop();
+
+	bool CheckMoney(int32 Value) { return Money >= Value; }
+
+	void AddDamage(float Value) { Damage += Value; }
+
+	float GetDamage() { return Damage; }
+
+	void RifleMode();
+
+	void GrenadeMode();
 };

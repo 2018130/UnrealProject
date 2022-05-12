@@ -6,6 +6,9 @@
 #include "GameFramework/Character.h"
 #include "MovableCharacter.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangedHP, class AMovableCharacter*, Character);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangedMP, class AMovableCharacter*, Character);
+
 UCLASS()
 class TEMPPROJECT_API AMovableCharacter : public ACharacter
 {
@@ -23,7 +26,36 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+protected:
+	UPROPERTY(EditAnywhere)
+		UChildActorComponent* WeaponActorComponent;
 
+	UPROPERTY(EditAnywhere)
+		float HP;
+	UPROPERTY(EditAnywhere)
+		float MaxHP;
+	UPROPERTY(EditAnywhere)
+		float MP;
+	UPROPERTY(EditAnywhere)
+		float MaxMP;
+public:
+
+	UPROPERTY(EditAnywhere)
+		FOnChangedHP OnChangedHP;
+	UPROPERTY(EditAnywhere)
+		FOnChangedMP OnChangedMP;
+
+	UFUNCTION(BlueprintCallable)
+		void AddHP(float Value);
+
+	void AddMP(float Value);
+
+	float GetHP() { return HP; }
+	float GetMP() { return MP; }
+	float GetMaxHP() { return MaxHP; }
+	float GetMaxMP() { return MaxMP; }
+
+	virtual void Attack() {};
+
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 };

@@ -3,16 +3,31 @@
 
 #include "MovablePlayerCharacter.h"
 
+#include "ShopWidget.h"
+#include "02_Item/Item_BulletActor.h"
+#include "98_Widget/MainWidget.h"
+#include "98_Widget/AskPickUpItemWidget.h"
+
 #include "TestPlayerController.h"
 #include "00_Component/TimerComponent.h"
+#include "00_Component/ZoominComponent.h"
+#include "01_AI/AICharacter.h"
+#include "98_Widget/BulletCountWidget.h"
+#include "98_Widget/ShowGetMoneyWidget.h"
 #include "98_Widget/TimerUserWidget.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Misc/App.h"
+#include "Particles/ParticleSystem.h"
+#include "02_Item/00_Weapon/Weapon_GrenadeActor.h"
+#include "Components/SphereComponent.h"
 
 AMovablePlayerCharacter::AMovablePlayerCharacter()
 {
+	Damage = 10;
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
@@ -29,6 +44,18 @@ AMovablePlayerCharacter::AMovablePlayerCharacter()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
 	TimerComponent = CreateDefaultSubobject<UTimerComponent>(TEXT("TimerComponent"));
+
+	ZoominComponent = CreateDefaultSubobject<UZoominComponent>(TEXT("ZoominComponent"));
+
+	const ConstructorHelpers::FObjectFinder<UParticleSystem>ParticleAsset(
+		TEXT("ParticleSystem'/Game/MilitaryWeapSilver/FX/P_Impact_Stone_Large_01.P_Impact_Stone_Large_01'"));
+	ShootPointParticle = ParticleAsset.Object;
+
+	const ConstructorHelpers::FObjectFinder<USoundWave>SoundAsset(
+		TEXT("SoundWave'/Game/MilitaryWeapSilver/Sound/Rifle/Wavs/RifleA_Fire01.RifleA_Fire01'"));
+	ShootSound = SoundAsset.Object;
+
+	WeaponType = EWeaponType::RIFLE;
 }
 
 void AMovablePlayerCharacter::PostInitializeComponents()
@@ -49,7 +76,20 @@ void AMovablePlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-	
+
+	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AMovablePlayerCharacter::Attack);
+	PlayerInputComponent->BindAction("Attack", IE_Released, this, &AMovablePlayerCharacter::StopAttack);
+
+	PlayerInputComponent->BindAction("Zoomin", EInputEvent::IE_Pressed, ZoominComponent, &UZoominComponent::Zoom);
+	PlayerInputComponent->BindAction("Zoomin", EInputEvent::IE_Released, ZoominComponent, &UZoominComponent::ZoomOut);
+
+	PlayerInputComponent->BindAction("PickUp", EInputEvent::IE_Pressed, this, &AMovablePlayerCharacter::PickUp);
+
+	PlayerInputComponent->BindAction("Shop", EInputEvent::IE_Pressed, this, &AMovablePlayerCharacter::Shop);
+
+	PlayerInputComponent->BindAction("RifleMode", EInputEvent::IE_Pressed, this, &AMovablePlayerCharacter::RifleMode);
+
+	PlayerInputComponent->BindAction("GrenadeMode", EInputEvent::IE_Pressed, this, &AMovablePlayerCharacter::GrenadeMode);
 }
 
 void AMovablePlayerCharacter::MoveForward(float Value)
@@ -71,3 +111,184 @@ void AMovablePlayerCharacter::MoveRight(float Value)
 
 	AddMovementInput(Vector, Value);
 }
+
+void AMovablePlayerCharacter::PickUp()
+{
+	TArray<AActor*> Hits;
+	GetOverlappingActors(Hits);
+	for (int i = 0; i < Hits.Num(); i++) {
+		if (Hits[i]->IsA<AItem_BulletActor>()) {
+			AddBullet(30);
+			Hits[i]->Destroy();
+		}
+	}
+}
+
+void AMovablePlayerCharacter::Attack()
+{
+	//GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
+	if (GetController<ATestPlayerController>()->GetMainWidget()->GetShopWidget()->GetVisibility() == ESlateVisibility::Hidden) {
+		GetCharacterMovement()->MaxWalkSpeed -= 100;
+		if (BulletCount <= 0) {
+			return;
+		}
+
+		GetWorldTimerManager().SetTimer(ShootTimerHandle, this, &AMovablePlayerCharacter::Shoot, ShootDelay, true);
+	}
+}
+
+void AMovablePlayerCharacter::StopAttack()
+{
+	if (GetController<ATestPlayerController>()->GetMainWidget()->GetShopWidget()->GetVisibility() == ESlateVisibility::Hidden) {
+		GetCharacterMovement()->MaxWalkSpeed += 100;
+		GetWorldTimerManager().ClearTimer(ShootTimerHandle);
+	}
+}
+
+void AMovablePlayerCharacter::Shoot()
+{
+	if (BulletCount <= 0) {
+		return;
+	}
+
+	if (WeaponType == EWeaponType::RIFLE) {
+		AddBullet(-1);
+		UGameplayStatics::PlaySoundAtLocation(this, ShootSound, this->GetActorLocation(), this->GetViewRotation());
+		auto Con = GetController<ATestPlayerController>();
+
+		FVector StartVector, EndVector;
+		if (ZoominComponent->IsZoomMode()) {
+			StartVector = GetFollowCamera()->GetComponentLocation();
+			FVector Vec = FRotationMatrix(FRotator(Con->GetControlRotation().Pitch, Con->GetControlRotation().Yaw, Con->GetControlRotation().Roll)).GetUnitAxis(EAxis::X);
+			EndVector = Vec * Range + StartVector;
+		}
+		else
+		{
+			StartVector = GetActorLocation();
+			EndVector = GetActorForwardVector() * Range + StartVector;
+		}
+
+		FHitResult Hit;
+
+		if (UKismetSystemLibrary::LineTraceSingleForObjects(this, StartVector, EndVector,
+			ObjectType, false, TArray<AActor*>(), EDrawDebugTrace::None,
+			Hit, true))
+		{
+			if (ShootPointParticle != nullptr)
+			{
+				UGameplayStatics::SpawnEmitterAtLocation(this, ShootPointParticle, Hit.Location);
+			}
+
+			auto Enemy = Cast<AAICharacter>(Hit.GetActor());
+			if (Enemy != nullptr)
+			{
+
+				Enemy->TakeDamage(Damage, FDamageEvent(), this->GetController(), nullptr);
+			}
+		}
+
+		if (Con != nullptr)
+		{
+			FRotator Rot = Con->GetControlRotation();
+			Rot.Yaw += FMath::RandRange(-0.5f, 0.5f);
+			Rot.Pitch += FMath::RandRange(0.f, 1.f);
+
+			Con->SetControlRotation(Rot);
+		}
+	}else if(WeaponType == EWeaponType::GRENADE)
+	{
+		if(BulletCount >= 1000)
+		{
+			auto Grenade = GetWorld()->SpawnActor<AWeapon_GrenadeActor>(GrenadeActor, GetActorLocation() + 100, GetActorRotation());
+			Grenade->SetOnwer(this);
+			auto Con = GetController<ATestPlayerController>();
+			FVector Vec = FRotationMatrix(FRotator(Con->GetControlRotation().Pitch, Con->GetControlRotation().Yaw, Con->GetControlRotation().Roll)).GetUnitAxis(EAxis::X);
+
+			Grenade->GetMeshComponent()->AddForce(Vec * 100000 * Grenade->GetMeshComponent()->GetMass());
+
+			AddBullet(-1000);
+		}else
+		{
+			UKismetSystemLibrary::PrintString(this, "Requires 1000 bullets");
+		}
+	}
+}
+
+void AMovablePlayerCharacter::NotifyActorBeginOverlap(AActor* Otheractor)
+{
+	auto Bullet = Cast<AItemActor>(Otheractor);
+	if (Bullet != nullptr) {
+		auto MainWidget = GetController<ATestPlayerController>()->GetMainWidget();
+		if (MainWidget != nullptr) {
+			MainWidget->GetAskPickUpItemWidget()->SetVisibility(ESlateVisibility::Visible);
+		}
+	}
+}
+
+void AMovablePlayerCharacter::NotifyActorEndOverlap(AActor* Otheractor)
+{
+	auto Bullet = Cast<AItemActor>(Otheractor);
+	if (Bullet != nullptr) {
+		auto MainWidget = GetController<ATestPlayerController>()->GetMainWidget();
+		if (MainWidget != nullptr) {
+			MainWidget->GetAskPickUpItemWidget()->SetVisibility(ESlateVisibility::Hidden);
+		}
+	}
+}
+
+void AMovablePlayerCharacter::AddMoney(int32 Value)
+{
+	Money += Value;
+	auto Con = GetController<ATestPlayerController>();
+	if(Con != nullptr)
+	{
+		Con->GetMainWidget()->GetShowGetMoneyWidget()->SetMoneyTextBlock(Money);
+	}
+}
+
+void AMovablePlayerCharacter::AddBullet(int32 Value)
+{
+	BulletCount += Value;
+	if (BulletCount < 0) BulletCount = 0;
+
+	auto MainWidget = GetController<ATestPlayerController>()->GetMainWidget();
+	if(MainWidget!= nullptr)
+	{
+		MainWidget->GetBulletCountWidget()->SetTextBlock_BulletCount(BulletCount);
+	}
+}
+
+void AMovablePlayerCharacter::Shop()
+{
+	auto Con = GetController<ATestPlayerController>();
+	if (Con != nullptr) {
+
+		auto MainWidget = Con->GetMainWidget();
+		if (MainWidget != nullptr) {
+
+			auto ShopWidget = MainWidget->GetShopWidget();
+			if (ShopWidget->GetVisibility() == ESlateVisibility::Hidden)
+			{
+				Con->SetInputMode(FInputModeGameAndUI());
+				Con->SetShowMouseCursor(true);
+				ShopWidget->SetVisibility(ESlateVisibility::Visible);
+			}else
+			{
+				Con->SetInputMode(FInputModeGameOnly());
+				Con->SetShowMouseCursor(false);
+				ShopWidget->SetVisibility(ESlateVisibility::Hidden);
+			}
+		}
+	}
+}
+
+void AMovablePlayerCharacter::RifleMode()
+{
+	WeaponType = EWeaponType::RIFLE;
+}
+
+void AMovablePlayerCharacter::GrenadeMode()
+{
+	WeaponType = EWeaponType::GRENADE;
+}
+

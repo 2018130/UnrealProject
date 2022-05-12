@@ -3,6 +3,14 @@
 
 #include "MyAIController.h"
 
+#include "MovableCharacter.h"
+#include "MovablePlayerCharacter.h"
+#include "01_AI/AICharacter.h"
+#include "BehaviorTree/BehaviorTree.h"
+
+#include "BehaviorTree/BlackboardComponent.h"
+#include "Engine/TargetPoint.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 
@@ -20,20 +28,43 @@ AMyAIController::AMyAIController()
 	SenseConfig_Sight->PeripheralVisionAngleDegrees = AIFieldOfView;
 
 	SenseConfig_Sight->DetectionByAffiliation.bDetectEnemies = true;
-	SenseConfig_Sight->DetectionByAffiliation.bDetectFriendlies = true;
-	SenseConfig_Sight->DetectionByAffiliation.bDetectNeutrals = true;
+	SenseConfig_Sight->DetectionByAffiliation.bDetectFriendlies = false;
+	SenseConfig_Sight->DetectionByAffiliation.bDetectNeutrals = false;
 
 	GetPerceptionComponent()->ConfigureSense(*SenseConfig_Sight);
-	GetPerceptionComponent()->OnPerceptionUpdated.AddDynamic(this, &AMyAIController::OnPawnDetected);
+	//GetPerceptionComponent()->OnTargetPerceptionUpdated.AddDynamic(this, &AMyAIController::OnPawnDetected);
 }
 
-void AMyAIController::OnPawnDetected(const TArray<AActor*>& DetectedPawn)
+void AMyAIController::BeginPlay()
 {
-	if(DetectedPawn.Num() != 0)
+	Super::BeginPlay();
+}
+
+void AMyAIController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+
+	auto AI = Cast<AAICharacter>(InPawn);
+	if (AI != nullptr)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Pawn detected"));
-	}else
-	{
-		UE_LOG(LogTemp, Log, TEXT("Pawn dont detected"));
+		AI->GetMesh()->SetCollisionProfileName("EnemyPreset");
+		RunBehaviorTree(AI->GetBehaviorTree());
 	}
 }
+/*
+void AMyAIController::OnPawnDetected(AActor* Target, FAIStimulus Stimulus)
+{
+	if (Target != nullptr) {
+		const auto BlackboardComp = GetBlackboardComponent();
+		if (BlackboardComp != nullptr)
+		{
+			auto Value = BlackboardComp->GetValueAsObject("Target");
+			if (Value == nullptr)
+			{
+
+				BlackboardComp->SetValueAsObject("Target", Target);
+			}
+		}
+	}
+}
+*/

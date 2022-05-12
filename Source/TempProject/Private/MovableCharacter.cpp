@@ -9,6 +9,8 @@ AMovableCharacter::AMovableCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	WeaponActorComponent = CreateDefaultSubobject<UChildActorComponent>(TEXT("WeaponActorComponent"));
+	WeaponActorComponent->SetupAttachment(GetMesh(), "WeaponSocket");
 }
 
 // Called when the game starts or when spawned
@@ -25,10 +27,27 @@ void AMovableCharacter::Tick(float DeltaTime)
 
 }
 
-// Called to bind functionality to input
-void AMovableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AMovableCharacter::AddHP(float Value)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
+	float NewHP = FMath::Clamp(Value + HP, 0, MaxHP);
+	HP = NewHP;
+	OnChangedHP.Broadcast(this);
 }
+
+void AMovableCharacter::AddMP(float Value)
+{
+	float NewMP = FMath::Clamp(Value + MP, 0, MaxMP);
+	MP = NewMP;
+	OnChangedMP.Broadcast(this);
+}
+
+float AMovableCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+
+	this->AddHP(-DamageAmount);
+
+	return 1;
+}
+
 
