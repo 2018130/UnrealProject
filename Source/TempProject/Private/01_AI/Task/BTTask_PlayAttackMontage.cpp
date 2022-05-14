@@ -20,19 +20,14 @@ EBTNodeResult::Type UBTTask_PlayAttackMontage::ExecuteTask(UBehaviorTreeComponen
 {
 	auto Controller = OwnerComp.GetOwner<AMyAIController>();
 
-	if(Controller != nullptr)
+	if (Controller != nullptr)
 	{
-		Controller = Controller;
+		auto AI = Controller->GetPawn<AAICharacter>();
+		AI->GetMesh()->GetAnimInstance()->Montage_Play(Montage_Attack, 1.0f, EMontagePlayReturnType::Duration);
+		FTimerHandle TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UBTTask_PlayAttackMontage::EndTask, 1.0);
+		return EBTNodeResult::InProgress;
 
-		if(Controller != nullptr)
-		{
-			auto AI = Controller->GetPawn<AAICharacter>();
-			AI->GetMesh()->GetAnimInstance()->Montage_Play(Montage_Attack, 1.0f, EMontagePlayReturnType::Duration);
-			UKismetSystemLibrary::PrintString(this, "Montage Played");
-			FTimerHandle TimerHandle;
-			GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UBTTask_PlayAttackMontage::EndTask, 1.0);
-			return EBTNodeResult::InProgress;
-		}
 	}
 	return EBTNodeResult::Failed;
 }
@@ -43,10 +38,10 @@ void UBTTask_PlayAttackMontage::TickTask(UBehaviorTreeComponent& OwnerComp, uint
 	AIController = Cast<AMyAIController>(OwnerComp.GetOwner());
 	if (AIController != nullptr) {
 		auto BlackboardComp = AIController->GetBlackboardComponent();
-		if(BlackboardComp != nullptr)
+		if (BlackboardComp != nullptr)
 		{
 			auto target = BlackboardComp->GetValueAsObject("Target");
-			if(target != nullptr)
+			if (target != nullptr)
 			{
 				auto Target = Cast<AMovablePlayerCharacter>(target);
 				if (Target != nullptr) {
@@ -62,8 +57,10 @@ void UBTTask_PlayAttackMontage::TickTask(UBehaviorTreeComponent& OwnerComp, uint
 void UBTTask_PlayAttackMontage::EndTask()
 {
 	UKismetSystemLibrary::PrintString(this, "EndTask Called");
-	AIController->GetPawn<AAICharacter>()->GetMesh()->GetAnimInstance()->Montage_Stop(0.1);
-	AIController->RunBehaviorTree(AIController->GetPawn<AAICharacter>()->GetBehaviorTree());
-	auto BTree = AIController->GetBrainComponent();
-	FinishLatentTask(*(Cast<UBehaviorTreeComponent>(BTree)), EBTNodeResult::Succeeded);
+	if (AIController != nullptr && !AIController->GetPawn<AAICharacter>()->Dying) {
+		AIController->GetPawn<AAICharacter>()->GetMesh()->GetAnimInstance()->Montage_Stop(0.1);
+		AIController->RunBehaviorTree(AIController->GetPawn<AAICharacter>()->GetBehaviorTree());
+		auto BTree = AIController->GetBrainComponent();
+		FinishLatentTask(*(Cast<UBehaviorTreeComponent>(BTree)), EBTNodeResult::Succeeded);
+	}
 }

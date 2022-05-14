@@ -30,7 +30,7 @@ AMyAIController::AMyAIController()
 	SenseConfig_Sight->DetectionByAffiliation.bDetectEnemies = true;
 	SenseConfig_Sight->DetectionByAffiliation.bDetectFriendlies = false;
 	SenseConfig_Sight->DetectionByAffiliation.bDetectNeutrals = false;
-
+	
 	GetPerceptionComponent()->ConfigureSense(*SenseConfig_Sight);
 	//GetPerceptionComponent()->OnTargetPerceptionUpdated.AddDynamic(this, &AMyAIController::OnPawnDetected);
 }
@@ -43,11 +43,12 @@ void AMyAIController::BeginPlay()
 void AMyAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
-
+	if (InPawn != nullptr) {
+		Cast<AAICharacter>(InPawn)->GetMesh()->SetCollisionProfileName("EnemyPreset");
+	}
 	auto AI = Cast<AAICharacter>(InPawn);
 	if (AI != nullptr)
 	{
-		AI->GetMesh()->SetCollisionProfileName("EnemyPreset");
 		RunBehaviorTree(AI->GetBehaviorTree());
 	}
 }

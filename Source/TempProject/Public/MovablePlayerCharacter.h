@@ -66,6 +66,8 @@ protected:
 
 	void PickUp();
 
+	virtual void Tick(float DeltaSeconds) override;
+
 	UPROPERTY(EditAnywhere)
 		float ShootDelay;
 

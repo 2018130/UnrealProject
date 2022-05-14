@@ -8,14 +8,17 @@
 #include "MovablePlayerCharacter.h"
 #include "MyAIController.h"
 #include "TestPlayerController.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
 AAICharacter::AAICharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-	
+	//PrimaryActorTick.bCanEverTick = true;
+
+	GetCapsuleComponent()->SetCollisionProfileName("EnemyPreset");
 }
 
 // Called when the game starts or when spawned
@@ -25,11 +28,6 @@ void AAICharacter::BeginPlay()
 
 }
 
-// Called every frame
-void AAICharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
 
 // Called to bind functionality to input
 void AAICharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -50,6 +48,7 @@ float AAICharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 	if(!Dying && this->HP <= 0)
 	{
 		Dying = true;
+		GetCharacterMovement()->StopActiveMovement();
 
 		auto Player = EventInstigator->GetPawn<AMovablePlayerCharacter>();
 		if(Player != nullptr)

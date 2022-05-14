@@ -124,6 +124,17 @@ void AMovablePlayerCharacter::PickUp()
 	}
 }
 
+void AMovablePlayerCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	
+	FVector StartVector = GetMesh()->GetSocketLocation("weapon_l");
+	StartVector.Z += 5;
+	FVector EndVector = GetActorForwardVector() * Range + GetMesh()->GetSocketLocation("weapon_l");
+	DrawDebugLine(GetWorld(), StartVector, EndVector, FColor::Red);
+	
+}
+
 void AMovablePlayerCharacter::Attack()
 {
 	//GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
@@ -164,8 +175,9 @@ void AMovablePlayerCharacter::Shoot()
 		}
 		else
 		{
-			StartVector = GetActorLocation();
-			EndVector = GetActorForwardVector() * Range + StartVector;
+			StartVector = GetMesh()->GetSocketLocation("weapon_l");
+			StartVector.Z += 5;
+			EndVector = GetActorForwardVector() * Range + GetMesh()->GetSocketLocation("weapon_l");
 		}
 
 		FHitResult Hit;

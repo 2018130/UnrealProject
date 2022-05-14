@@ -27,7 +27,6 @@ void UBTService_FindPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 			{
 				//for (int32 i = 0; i < Hits.Num(); i++)
 				OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), Hits.GetActor());
-				UKismetSystemLibrary::PrintString(this, "target Detected");
 				return;
 			}
 			OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), nullptr);

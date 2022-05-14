@@ -31,6 +31,12 @@ public:
 	bool IsZoomMode() { return IsZoomIn; }
 protected:
 
+	UPROPERTY(EditAnywhere)
+		float XVal;
+	UPROPERTY(EditAnywhere)
+		float YVal;
+	UPROPERTY(EditAnywhere)
+		float ZVal;
 	bool IsZoomIn = false;
 
 };

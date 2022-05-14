@@ -66,8 +66,9 @@ void UZoominComponent::Zoom()
 			CameraBoom->TargetArmLength -= 500;
 
 			FVector CamRocation = Camera->GetRelativeLocation();
-			CamRocation.Y += 50;
-			CamRocation.Z += 50;
+			CamRocation.X += XVal;
+			CamRocation.Y += YVal;
+			CamRocation.Z += ZVal;
 			Camera->SetRelativeLocation(CamRocation);
 
 			auto Controller = Player->GetController<ATestPlayerController>();
@@ -94,8 +95,9 @@ void UZoominComponent::ZoomOut()
 			CameraBoom->TargetArmLength += 500;
 
 			FVector Rocation = Camera->GetRelativeLocation();
-			Rocation.Y -= 50;
-			Rocation.Z -= 50;
+			Rocation.X -= XVal;
+			Rocation.Y -= YVal;
+			Rocation.Z -= ZVal;
 			Camera->SetRelativeLocation(Rocation);
 
 			auto Controller = Player->GetController<ATestPlayerController>();

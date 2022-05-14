@@ -29,11 +29,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	bool Dying = false;
-
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+
+	bool Dying = false;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
