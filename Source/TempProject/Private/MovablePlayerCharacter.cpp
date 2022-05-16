@@ -128,11 +128,12 @@ void AMovablePlayerCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	
-	FVector StartVector = GetMesh()->GetSocketLocation("weapon_l");
-	StartVector.Z += 5;
-	FVector EndVector = GetActorForwardVector() * Range + GetMesh()->GetSocketLocation("weapon_l");
-	DrawDebugLine(GetWorld(), StartVector, EndVector, FColor::Red);
-	
+	if (!ZoominComponent->IsZoomMode()) {
+		FVector StartVector = GetMesh()->GetSocketLocation("weapon_l");
+		StartVector.Z += 5;
+		FVector EndVector = GetActorForwardVector() * Range + GetMesh()->GetSocketLocation("weapon_l");
+		DrawDebugLine(GetWorld(), StartVector, EndVector, FColor::Red);
+	}
 }
 
 void AMovablePlayerCharacter::Attack()
@@ -195,7 +196,7 @@ void AMovablePlayerCharacter::Shoot()
 			if (Enemy != nullptr)
 			{
 
-				Enemy->TakeDamage(Damage, FDamageEvent(), this->GetController(), nullptr);
+				Enemy->TakeDamage(Damage, FDamageEvent(), this->GetController(), this);
 			}
 		}
 

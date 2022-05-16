@@ -8,7 +8,9 @@
 #include "MovablePlayerCharacter.h"
 #include "MyAIController.h"
 #include "TestPlayerController.h"
+#include "98_Widget/AIProgressBarWidget.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -19,6 +21,14 @@ AAICharacter::AAICharacter()
 	//PrimaryActorTick.bCanEverTick = true;
 
 	GetCapsuleComponent()->SetCollisionProfileName("EnemyPreset");
+
+	Dying = false;
+
+	HPBarWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBarWidgetComp"));
+	HPBarWidgetComp->SetupAttachment(RootComponent);
+	HPBarWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
+	HPBarWidgetComp->SetVisibility(false);
+
 }
 
 // Called when the game starts or when spawned
@@ -45,31 +55,45 @@ float AAICharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 	AActor* DamageCauser)
 {
 	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	if(!Dying && this->HP <= 0)
+
+	if(!Dying)
 	{
-		Dying = true;
-		GetCharacterMovement()->StopActiveMovement();
-
-		auto Player = EventInstigator->GetPawn<AMovablePlayerCharacter>();
-		if(Player != nullptr)
+		if (HPBarWidgetComp != nullptr)
 		{
-			Player->AddMoney(FMath::RandRange(10, 100));
+			HPBarWidgetComp->SetVisibility(true);
+			auto HPBarWidget = Cast<UAIProgressBarWidget>(HPBarWidgetComp->GetWidget());
+			if (HPBarWidget != nullptr) {
+				float per = HP / MaxHP;
+				HPBarWidget->SetProgressBar(per);
+			}
 		}
 
-		auto controller = this->GetController<AMyAIController>();
-		if(controller != nullptr)
-		{
-			controller->GetBrainComponent()->StopLogic("Death");
-		}
+		if (HP <= 0) {
+			Dying = true;
+			GetCapsuleComponent()->SetCollisionProfileName("Spectator");
+			GetCharacterMovement()->StopActiveMovement();
+			auto Player = EventInstigator->GetPawn<AMovablePlayerCharacter>();
+			if (Player != nullptr)
+			{
+				Player->AddMoney(FMath::RandRange(10, 100));
+			}
 
-		FTimerHandle TimerHandle;
-		auto Time = 5.f;
-		if(DeathAsset != nullptr)
-		{
-			GetMesh()->PlayAnimation(DeathAsset, false);
+			auto controller = this->GetController<AMyAIController>();
+			if (controller != nullptr)
+			{
+				controller->GetBrainComponent()->StopLogic("Death");
+			}
+
+			FTimerHandle TimerHandle;
+			auto Time = 5.f;
+			if (DeathAsset != nullptr)
+			{
+				GetMesh()->PlayAnimation(DeathAsset, false);
+			}
+			GetWorldTimerManager().SetTimer(TimerHandle, this, &AAICharacter::Death, Time);
 		}
-		GetWorldTimerManager().SetTimer(TimerHandle, this, &AAICharacter::Death, Time);
 	}
+	
 	return Damage;
 }
 

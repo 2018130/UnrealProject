@@ -7,6 +7,7 @@
 #include "MovablePlayerCharacter.h"
 #include "01_AI/AICharacter.h"
 #include "BehaviorTree/BehaviorTree.h"
+#include "98_Widget/AIProgressBarWidget.h"
 
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Engine/TargetPoint.h"

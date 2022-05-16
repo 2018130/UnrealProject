@@ -57,7 +57,7 @@ void UBTTask_PlayAttackMontage::TickTask(UBehaviorTreeComponent& OwnerComp, uint
 void UBTTask_PlayAttackMontage::EndTask()
 {
 	UKismetSystemLibrary::PrintString(this, "EndTask Called");
-	if (AIController != nullptr && !AIController->GetPawn<AAICharacter>()->Dying) {
+	if (AIController != nullptr && !AIController->GetPawn<AAICharacter>()->GetDying()) {
 		AIController->GetPawn<AAICharacter>()->GetMesh()->GetAnimInstance()->Montage_Stop(0.1);
 		AIController->RunBehaviorTree(AIController->GetPawn<AAICharacter>()->GetBehaviorTree());
 		auto BTree = AIController->GetBrainComponent();

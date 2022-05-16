@@ -29,9 +29,10 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+	bool Dying;
 
-	bool Dying = false;
+public:	
+	bool GetDying() { return Dying; }
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -42,6 +43,9 @@ public:
 	class UBehaviorTree* GetBehaviorTree() { return BehaviorTree; }
 
 	virtual void Attack() override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		class UWidgetComponent* HPBarWidgetComp;
 
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 

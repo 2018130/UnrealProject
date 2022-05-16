@@ -47,7 +47,7 @@ float AMovableCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dama
 
 	this->AddHP(-DamageAmount);
 
-	return 1;
+	return DamageAmount;
 }
 
 

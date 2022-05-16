@@ -13,6 +13,8 @@
 void UBTService_FindPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
+	if (OwnerComp.GetBlackboardComponent()->GetValueAsObject("Target") != nullptr) return;
+
 
 	auto Controller = OwnerComp.GetOwner<AMyAIController>();
 	if (Controller != nullptr) {

@@ -24,7 +24,7 @@ protected:
 	float AIFieldOfView = 45.f;
 
 	class UAISenseConfig_Sight* SenseConfig_Sight;
-	
+
 	virtual void BeginPlay() override;
 
 	virtual void OnPossess(APawn* InPawn) override;

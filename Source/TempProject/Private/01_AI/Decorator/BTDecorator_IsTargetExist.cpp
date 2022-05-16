@@ -12,7 +12,7 @@ bool UBTDecorator_IsTargetExist::CalculateRawConditionValue(UBehaviorTreeCompone
 	auto Controller = OwnerComp.GetOwner<AAIController>();
 	auto Mesh = Controller->GetPawn<AAICharacter>()->GetMesh();
 	if (Mesh != nullptr) {
-		if (Controller != nullptr && !Mesh->GetAnimInstance()->IsAnyMontagePlaying())
+		if (Controller != nullptr)
 		{
 			if (Controller->GetBlackboardComponent()->GetValueAsObject("Target") != nullptr)
 			{
