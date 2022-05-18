@@ -130,8 +130,10 @@ void AMovablePlayerCharacter::Tick(float DeltaSeconds)
 	
 	if (!ZoominComponent->IsZoomMode()) {
 		FVector StartVector = GetMesh()->GetSocketLocation("weapon_l");
-		StartVector.Z += 5;
-		FVector EndVector = GetActorForwardVector() * Range + GetMesh()->GetSocketLocation("weapon_l");
+		FRotator Rot = GetMesh()->GetSocketRotation("weapon_l");
+		Rot.Yaw += 90;
+		FVector RotVector = FRotationMatrix(FRotator(Rot.Pitch, Rot.Yaw, Rot.Roll)).GetUnitAxis(EAxis::X);
+		FVector EndVector = RotVector * Range + GetMesh()->GetSocketLocation("weapon_l");
 		DrawDebugLine(GetWorld(), StartVector, EndVector, FColor::Red);
 	}
 }
@@ -177,8 +179,10 @@ void AMovablePlayerCharacter::Shoot()
 		else
 		{
 			StartVector = GetMesh()->GetSocketLocation("weapon_l");
-			StartVector.Z += 5;
-			EndVector = GetActorForwardVector() * Range + GetMesh()->GetSocketLocation("weapon_l");
+			FRotator Rot = GetMesh()->GetSocketRotation("weapon_l");
+
+			FVector RotVector = FRotationMatrix(FRotator(Rot.Pitch, Rot.Yaw, Rot.Roll)).GetUnitAxis(EAxis::X);
+			EndVector = RotVector * Range + GetMesh()->GetSocketLocation("weapon_l");
 		}
 
 		FHitResult Hit;
