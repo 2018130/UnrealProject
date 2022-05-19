@@ -16,10 +16,6 @@ bool UBTDecorator_CheckHP::CalculateRawConditionValue(UBehaviorTreeComponent& Ow
 		auto AI = AIController->GetPawn<AAICharacter>();
 		if (AI->GetHP() != AI->GetMaxHP())
 		{
-			if (AI->GetCharacterMovement()->MaxWalkSpeed < 800) {
-				AI->GetCharacterMovement()->MaxWalkSpeed += 100;
-			}
-
 			return true;
 		}
 	}

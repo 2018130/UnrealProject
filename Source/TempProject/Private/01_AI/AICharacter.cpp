@@ -58,6 +58,16 @@ float AAICharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 
 	if(!Dying)
 	{
+		if(Hit_ReactMontage != nullptr)
+		{
+			float time = GetMesh()->GetAnimInstance()->Montage_Play(Hit_ReactMontage, 1.3f, EMontagePlayReturnType::Duration);
+			MaxSPD = GetCharacterMovement()->MaxWalkSpeed;
+			GetCharacterMovement()->MaxWalkSpeed = 0;
+
+			FTimerHandle TimerHandle;
+			GetWorldTimerManager().SetTimer(TimerHandle, this, &AAICharacter::StopFrozen, time);
+		}
+
 		if (HPBarWidgetComp != nullptr)
 		{
 			HPBarWidgetComp->SetVisibility(true);
@@ -100,4 +110,12 @@ float AAICharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 void AAICharacter::Death()
 {
 	Destroy();
+}
+
+void AAICharacter::StopFrozen()
+{
+	if(MaxSPD <= 800)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = MaxSPD + 100;
+	}
 }

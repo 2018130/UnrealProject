@@ -64,6 +64,7 @@ void AMovablePlayerCharacter::PostInitializeComponents()
 	
 	CameraBoom->bEnableCameraLag = true;
 	CameraBoom->CameraLagSpeed = LagSpeed;
+	isAttacking = false;
 }
 
 void AMovablePlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -79,6 +80,8 @@ void AMovablePlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AMovablePlayerCharacter::Attack);
 	PlayerInputComponent->BindAction("Attack", IE_Released, this, &AMovablePlayerCharacter::StopAttack);
+
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AMovablePlayerCharacter::Jump);
 
 	PlayerInputComponent->BindAction("Zoomin", EInputEvent::IE_Pressed, ZoominComponent, &UZoominComponent::Zoom);
 	PlayerInputComponent->BindAction("Zoomin", EInputEvent::IE_Released, ZoominComponent, &UZoominComponent::ZoomOut);
@@ -124,29 +127,34 @@ void AMovablePlayerCharacter::PickUp()
 	}
 }
 
+void AMovablePlayerCharacter::Jump()
+{
+	Super::Jump();
+}
+
 void AMovablePlayerCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	
 	if (!ZoominComponent->IsZoomMode()) {
 		FVector StartVector = GetMesh()->GetSocketLocation("weapon_l");
-		FRotator Rot = GetMesh()->GetSocketRotation("weapon_l");
-		Rot.Yaw += 90;
+		FRotator Rot = GetMesh()->GetSocketRotation("lowerarm_l");
+		Rot.Pitch -= 8;
 		FVector RotVector = FRotationMatrix(FRotator(Rot.Pitch, Rot.Yaw, Rot.Roll)).GetUnitAxis(EAxis::X);
-		FVector EndVector = RotVector * Range + GetMesh()->GetSocketLocation("weapon_l");
+		FVector EndVector = RotVector * Range + StartVector;
 		DrawDebugLine(GetWorld(), StartVector, EndVector, FColor::Red);
 	}
 }
 
 void AMovablePlayerCharacter::Attack()
 {
-	//GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
 	if (GetController<ATestPlayerController>()->GetMainWidget()->GetShopWidget()->GetVisibility() == ESlateVisibility::Hidden) {
 		GetCharacterMovement()->MaxWalkSpeed -= 100;
 		if (BulletCount <= 0) {
 			return;
 		}
-
+		isAttacking = true;
+		Shoot();
 		GetWorldTimerManager().SetTimer(ShootTimerHandle, this, &AMovablePlayerCharacter::Shoot, ShootDelay, true);
 	}
 }
@@ -154,6 +162,7 @@ void AMovablePlayerCharacter::Attack()
 void AMovablePlayerCharacter::StopAttack()
 {
 	if (GetController<ATestPlayerController>()->GetMainWidget()->GetShopWidget()->GetVisibility() == ESlateVisibility::Hidden) {
+		isAttacking = false;
 		GetCharacterMovement()->MaxWalkSpeed += 100;
 		GetWorldTimerManager().ClearTimer(ShootTimerHandle);
 	}
@@ -161,8 +170,12 @@ void AMovablePlayerCharacter::StopAttack()
 
 void AMovablePlayerCharacter::Shoot()
 {
-	if (BulletCount <= 0) {
+	if (BulletCount <= 0 || GetMesh()->GetAnimInstance()->IsAnyMontagePlaying()) {
 		return;
+	}
+
+	if (AttackMontage != nullptr) {
+		GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage, 1 / ShootDelay);
 	}
 
 	if (WeaponType == EWeaponType::RIFLE) {
@@ -179,10 +192,10 @@ void AMovablePlayerCharacter::Shoot()
 		else
 		{
 			StartVector = GetMesh()->GetSocketLocation("weapon_l");
-			FRotator Rot = GetMesh()->GetSocketRotation("weapon_l");
-
+			FRotator Rot = GetMesh()->GetSocketRotation("lowerarm_l");
+			Rot.Pitch -= 8;
 			FVector RotVector = FRotationMatrix(FRotator(Rot.Pitch, Rot.Yaw, Rot.Roll)).GetUnitAxis(EAxis::X);
-			EndVector = RotVector * Range + GetMesh()->GetSocketLocation("weapon_l");
+			EndVector = RotVector * Range + StartVector;
 		}
 
 		FHitResult Hit;

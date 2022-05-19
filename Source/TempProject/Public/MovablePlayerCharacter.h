@@ -66,10 +66,15 @@ protected:
 
 	void PickUp();
 
+	virtual void Jump() override;
+
 	virtual void Tick(float DeltaSeconds) override;
 
 	UPROPERTY(EditAnywhere)
 		float ShootDelay;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		bool isAttacking;
 
 	FTimerHandle ShootTimerHandle;
 
@@ -86,6 +91,9 @@ protected:
 		TSubclassOf<class AWeapon_GrenadeActor> GrenadeActor;
 
 public:
+
+	UFUNCTION(BlueprintCallable)
+		bool GetIsAttacking() { return isAttacking; }
 
 	virtual void Attack() override;
 
@@ -116,4 +124,5 @@ public:
 	void RifleMode();
 
 	void GrenadeMode();
+	
 };

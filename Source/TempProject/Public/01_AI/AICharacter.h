@@ -16,12 +16,17 @@ public:
 	AAICharacter();
 
 protected:
+	float MaxSPD;
+
 	UPROPERTY(EditAnywhere)
 		class UBehaviorTree* BehaviorTree;
 	UPROPERTY(EditAnywhere)
 		class ATargetPoint* PointA;
 	UPROPERTY(EditAnywhere)
 		class ATargetPoint* PointB;
+
+	UPROPERTY(EditAnywhere)
+		class UAnimMontage* Hit_ReactMontage;
 
 	UPROPERTY(EditAnywhere)
 		UAnimationAsset* DeathAsset;
@@ -50,5 +55,6 @@ public:
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 	void Death();
-	
+
+	void StopFrozen();
 };
