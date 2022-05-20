@@ -36,8 +36,21 @@ protected:
 
 	bool Dying;
 
+	bool IsAttacking;
+
+	FRotator LookPlayerRotation;
 public:	
 	bool GetDying() { return Dying; }
+
+	UFUNCTION(BlueprintCallable)
+		bool GetIsAttacking() { return IsAttacking; }
+
+	UFUNCTION(BlueprintCallable)
+		FRotator GetLookPlayerRotation() { return LookPlayerRotation; }
+
+	void SetIsAttacking(bool Value) { IsAttacking = Value; }
+
+	void SetLookPlayerRotation(FRotator NewRot) { LookPlayerRotation = NewRot; }
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

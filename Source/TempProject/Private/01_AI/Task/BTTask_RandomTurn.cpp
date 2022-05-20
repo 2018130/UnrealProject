@@ -12,7 +12,6 @@
 EBTNodeResult::Type UBTTask_RandomTurn::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	auto BlackBoardComponent = OwnerComp.GetBlackboardComponent();
-	UKismetSystemLibrary::PrintString(this, FString::FormatAsNumber(time));
 	if (BlackBoardComponent != nullptr && time == 3)
 	{
 		FRotator Rot(0, FMath::RandRange(0, 360), 0);
