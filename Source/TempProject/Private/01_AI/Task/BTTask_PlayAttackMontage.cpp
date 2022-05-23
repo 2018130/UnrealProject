@@ -24,7 +24,7 @@ EBTNodeResult::Type UBTTask_PlayAttackMontage::ExecuteTask(UBehaviorTreeComponen
 	{
 		auto AI = Controller->GetPawn<AAICharacter>();
 		AI->SetIsAttacking(true);
-		AI->GetMesh()->GetAnimInstance()->Montage_Play(Montage_Attack, 1.0f, EMontagePlayReturnType::Duration);
+		//AI->GetMesh()->GetAnimInstance()->Montage_Play(Montage_Attack, 1.0f, EMontagePlayReturnType::Duration);
 		FTimerHandle TimerHandle;
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UBTTask_PlayAttackMontage::EndTask, 1.0);
 		return EBTNodeResult::InProgress;
@@ -47,9 +47,10 @@ void UBTTask_PlayAttackMontage::TickTask(UBehaviorTreeComponent& OwnerComp, uint
 				auto Target = Cast<AMovablePlayerCharacter>(target);
 				if (Target != nullptr) {
 					Target->TakeDamage(0.1, FDamageEvent(), AIController, nullptr);
-					
-					FRotator Rot =  AIController->GetControlRotation() - (Target->GetActorLocation() - AIController->GetPawn<AAICharacter>()->GetActorLocation()).Rotation();
-					AIController->GetPawn<AAICharacter>()->SetLookPlayerRotation(Rot);
+
+					FRotator ToPlayerRot = (Target->GetActorLocation() - AIController->GetPawn<AAICharacter>()->GetActorLocation()).Rotation();
+					FRotator ControllRot = AIController->GetControlRotation();
+					AIController->GetPawn<AAICharacter>()->SetLookPlayerRotation(ToPlayerRot - ControllRot);
 				}
 			}
 		}
@@ -63,8 +64,8 @@ void UBTTask_PlayAttackMontage::EndTask()
 		if (AI != nullptr && !AI->GetDying())
 		{
 			AI->SetIsAttacking(false);
-			AIController->GetPawn<AAICharacter>()->GetMesh()->GetAnimInstance()->Montage_Stop(0.1);
-			AIController->RunBehaviorTree(AIController->GetPawn<AAICharacter>()->GetBehaviorTree());
+			//AIController->GetPawn<AAICharacter>()->GetMesh()->GetAnimInstance()->Montage_Stop(0.1);
+			//AIController->RunBehaviorTree(AIController->GetPawn<AAICharacter>()->GetBehaviorTree());
 			auto BTree = AIController->GetBrainComponent();
 			FinishLatentTask(*(Cast<UBehaviorTreeComponent>(BTree)), EBTNodeResult::Succeeded);
 		}
