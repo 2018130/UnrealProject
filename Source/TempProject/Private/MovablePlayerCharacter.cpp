@@ -322,3 +322,15 @@ void AMovablePlayerCharacter::GrenadeMode()
 	WeaponType = EWeaponType::GRENADE;
 }
 
+float AMovablePlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	float Value = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	if(HP <= 0)
+	{
+		UGameplayStatics::OpenLevel(this, "Second_Scene");
+	}
+
+	return Value;
+}
+

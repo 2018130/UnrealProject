@@ -8,6 +8,7 @@
 #include "ShopWidget.h"
 
 #include "Components/ProgressBar.h"
+#include "Components/TextBlock.h"
 
 void UMainWidget::NativeConstruct()
 {
@@ -31,4 +32,9 @@ void UMainWidget::OnChangedMPPercentEvent(AMovableCharacter* Character)
 	{
 		ProgressBar_MP->SetPercent(Character->GetMP() / Character->GetMaxMP());
 	}
+}
+
+void UMainWidget::SetScore(FText NewScore)
+{
+	TextBlock_Score->SetText(NewScore);
 }

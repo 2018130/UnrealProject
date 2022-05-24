@@ -9,6 +9,7 @@
 #include "MyAIController.h"
 #include "TestPlayerController.h"
 #include "98_Widget/AIProgressBarWidget.h"
+#include "98_Widget/MainWidget.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -54,7 +55,7 @@ void AAICharacter::Attack()
 float AAICharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	AActor* DamageCauser)
 {
-	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	float Dam = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
 	if(!Dying)
 	{
@@ -89,6 +90,12 @@ float AAICharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 			if (Player != nullptr)
 			{
 				Player->AddMoney(FMath::RandRange(10, 100));
+				auto TargetController = Player->GetController<ATestPlayerController>();
+				if (TargetController != nullptr)
+				{
+					float Value = FCString::Atof(*TargetController->GetMainWidget()->GetScore().ToString()) + this->GetMaxHP() + this->Damage * 100;
+					TargetController->GetMainWidget()->SetScore(FText::AsNumber(Value));
+				}
 			}
 
 			auto controller = this->GetController<AMyAIController>();
@@ -117,7 +124,7 @@ void AAICharacter::Death()
 
 void AAICharacter::StopFrozen()
 {
-	if(MaxSPD <= 800)
+	if(MaxSPD < 800)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = MaxSPD + 100;
 	}else

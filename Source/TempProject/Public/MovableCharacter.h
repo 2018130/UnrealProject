@@ -38,6 +38,8 @@ protected:
 		float MP;
 	UPROPERTY(EditAnywhere)
 		float MaxMP;
+	UPROPERTY(EditAnywhere)
+		float Damage;
 public:
 
 	UPROPERTY(EditAnywhere)
@@ -58,4 +60,8 @@ public:
 	virtual void Attack() {};
 
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
+	void AddDamage(float Value) { Damage += Value; }
+
+	float GetDamage() { return Damage; }
 };

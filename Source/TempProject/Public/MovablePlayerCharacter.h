@@ -55,8 +55,6 @@ protected:
 
 	int32 Money;
 
-	UPROPERTY(VisibleAnywhere)
-		float Damage;
 	
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
@@ -117,12 +115,9 @@ public:
 
 	bool CheckMoney(int32 Value) { return Money >= Value; }
 
-	void AddDamage(float Value) { Damage += Value; }
-
-	float GetDamage() { return Damage; }
-
 	void RifleMode();
 
 	void GrenadeMode();
-	
+
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 };

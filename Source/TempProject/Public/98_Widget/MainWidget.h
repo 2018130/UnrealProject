@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/TextBlock.h"
 #include "MainWidget.generated.h"
 
 /**
@@ -22,6 +23,8 @@ protected:
 		class UProgressBar* ProgressBar_HP;
 	UPROPERTY(EditAnywhere)
 		class UProgressBar* ProgressBar_MP;
+	UPROPERTY(EditAnywhere)
+		class UTextBlock* TextBlock_Score;
 
 	UPROPERTY(EditAnywhere)
 		class UAskPickUpItemWidget* UMG_AskPickUpItem;
@@ -49,4 +52,7 @@ public:
 
 	UShopWidget* GetShopWidget() { return UMG_Shop; }
 
+	void SetScore(FText NewScore);
+
+	FText GetScore() { return TextBlock_Score->GetText(); }
 };
