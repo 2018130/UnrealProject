@@ -111,6 +111,10 @@ public:
 
 	void AddBullet(int32 Value);
 
+	float GetShootDelay() { return ShootDelay; }
+
+	void SetShootDelay(float Value);
+
 	void Shop();
 
 	bool CheckMoney(int32 Value) { return Money >= Value; }

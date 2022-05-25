@@ -63,5 +63,7 @@ public:
 
 	void AddDamage(float Value) { Damage += Value; }
 
+	void AddMaxHP(float Value) { MaxHP += Value; }
+
 	float GetDamage() { return Damage; }
 };

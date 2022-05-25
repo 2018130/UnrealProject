@@ -13,7 +13,9 @@ enum class EListCategory
 {
 	NONE,
 	DAMAGE,
-	BULLETCOUNT
+	BULLETCOUNT,
+	MaxHP,
+	AttSpd,
 };
 UCLASS()
 class TEMPPROJECT_API UShopListWidget : public UUserWidget

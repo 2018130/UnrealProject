@@ -22,8 +22,8 @@ EBTNodeResult::Type UBTTask_RandomMove::ExecuteTask(UBehaviorTreeComponent& Owne
 			if(Controller != nullptr)
 			{
 				//Controller->SetControlRotation(Rot);
-				FVector DirectionVector = FRotationMatrix(Rot).GetUnitAxis(EAxis::X);
-				FVector DestVector = DirectionVector * Distance + Owner->GetActorForwardVector();
+				FVector DirectionVector = FRotationMatrix(Rot).GetUnitAxis(EAxis::X); 
+				FVector DestVector = DirectionVector * Distance + Owner->GetActorLocation();
 				Controller->MoveToLocation(DestVector);
 
 				return EBTNodeResult::Succeeded;

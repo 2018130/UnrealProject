@@ -169,16 +169,16 @@ void AMovablePlayerCharacter::StopAttack()
 }
 
 void AMovablePlayerCharacter::Shoot()
-{
+{ 
 	if (BulletCount <= 0 || GetMesh()->GetAnimInstance()->IsAnyMontagePlaying()) {
 		return;
 	}
 
-	if (AttackMontage != nullptr) {
-		GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage, 1 / ShootDelay);
-	}
-
 	if (WeaponType == EWeaponType::RIFLE) {
+		if (AttackMontage != nullptr) {
+			GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage, 1 / ShootDelay);
+		}
+
 		AddBullet(-1);
 		UGameplayStatics::PlaySoundAtLocation(this, ShootSound, this->GetActorLocation(), this->GetViewRotation());
 		auto Con = GetController<ATestPlayerController>();
@@ -286,6 +286,17 @@ void AMovablePlayerCharacter::AddBullet(int32 Value)
 	{
 		MainWidget->GetBulletCountWidget()->SetTextBlock_BulletCount(BulletCount);
 	}
+}
+
+void AMovablePlayerCharacter::SetShootDelay(float Value)
+{
+	if(Value < 0.06)
+	{
+		UKismetSystemLibrary::PrintString(this, "Current maximum attack speed");
+		return;
+	}
+
+	ShootDelay = Value;
 }
 
 void AMovablePlayerCharacter::Shop()

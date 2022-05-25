@@ -22,4 +22,8 @@ protected:
 		class UShopListWidget* UMG_DamageList;
 	UPROPERTY(EditAnywhere)
 		class UShopListWidget* UMG_BulletList;
+	UPROPERTY(EditAnywhere)
+		class UShopListWidget* UMG_HPList;
+	UPROPERTY(EditAnywhere)
+		class UShopListWidget* UMG_AttSpdList;
 };

@@ -62,7 +62,7 @@ float AAICharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 		if(Hit_ReactMontage != nullptr)
 		{
 			
-			float time = GetMesh()->GetAnimInstance()->Montage_Play(Hit_ReactMontage, 1.3f, EMontagePlayReturnType::Duration);
+			float time = GetMesh()->GetAnimInstance()->Montage_Play(Hit_ReactMontage, 1.0f, EMontagePlayReturnType::Duration);
 			if (GetCharacterMovement()->MaxWalkSpeed != 0) {
 				MaxSPD = GetCharacterMovement()->MaxWalkSpeed;
 			}
@@ -124,11 +124,8 @@ void AAICharacter::Death()
 
 void AAICharacter::StopFrozen()
 {
-	if(MaxSPD < 800)
+	if(!GetMesh()->GetAnimInstance()->Montage_IsPlaying(Hit_ReactMontage))
 	{
-		GetCharacterMovement()->MaxWalkSpeed = MaxSPD + 100;
-	}else
-	{
-		GetCharacterMovement()->MaxWalkSpeed = 800;
+		GetCharacterMovement()->MaxWalkSpeed = 700;
 	}
 }

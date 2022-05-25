@@ -29,6 +29,16 @@ FReply UButtonWidget::NativeOnMouseButtonUp(const FGeometry& InGeometry, const F
 			case EListCategory::BULLETCOUNT:
 				Player->AddBullet(30);
 				break;
+			case EListCategory::MaxHP:
+				Player->AddMaxHP(10);
+				Player->OnChangedHP.Broadcast(Player);
+				break;
+			case EListCategory::AttSpd:
+				float Value = Player->GetShootDelay() - 0.01;
+				Player->SetShootDelay(Value);
+				if (Value < 0.06) return FReply::Handled();
+
+				break;
 			}
 			Player->AddMoney(-Cost);
 		}

@@ -19,5 +19,4 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		USkeletalMeshComponent* SkeletalMeshComponent;
-	
 };
