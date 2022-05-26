@@ -55,7 +55,6 @@ AMovablePlayerCharacter::AMovablePlayerCharacter()
 		TEXT("SoundWave'/Game/MilitaryWeapSilver/Sound/Rifle/Wavs/RifleA_Fire01.RifleA_Fire01'"));
 	ShootSound = SoundAsset.Object;
 
-	WeaponType = EWeaponType::RIFLE;
 }
 
 void AMovablePlayerCharacter::PostInitializeComponents()
@@ -326,11 +325,13 @@ void AMovablePlayerCharacter::Shop()
 void AMovablePlayerCharacter::RifleMode()
 {
 	WeaponType = EWeaponType::RIFLE;
+	GetController<ATestPlayerController>()->GetMainWidget()->SetWeaponType(FText::FromString("RIFLE"));
 }
 
 void AMovablePlayerCharacter::GrenadeMode()
 {
 	WeaponType = EWeaponType::GRENADE;
+	GetController<ATestPlayerController>()->GetMainWidget()->SetWeaponType(FText::FromString("GRENADE"));
 }
 
 float AMovablePlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)

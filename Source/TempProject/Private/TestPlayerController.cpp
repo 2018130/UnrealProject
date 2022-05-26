@@ -36,6 +36,7 @@ void ATestPlayerController::OnPossess(APawn* InPawn)
 				player->OnChangedMP.AddUniqueDynamic(MainWidget, &UMainWidget::OnChangedMPPercentEvent);
 				player->OnChangedHP.Broadcast(player);
 				player->OnChangedMP.Broadcast(player);
+				player->RifleMode();
 				player->AddMoney(0);
 				player->AddBullet(0);
 			}

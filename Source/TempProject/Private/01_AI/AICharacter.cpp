@@ -93,8 +93,8 @@ float AAICharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 				auto TargetController = Player->GetController<ATestPlayerController>();
 				if (TargetController != nullptr)
 				{
-					float Value = FCString::Atof(*TargetController->GetMainWidget()->GetScore().ToString()) + this->GetMaxHP() + this->Damage * 100;
-					TargetController->GetMainWidget()->SetScore(FText::AsNumber(Value));
+					float Value = this->GetMaxHP() + this->Damage * 100;
+					TargetController->GetMainWidget()->AddScore(Value);
 				}
 			}
 

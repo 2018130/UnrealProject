@@ -25,6 +25,8 @@ protected:
 		class UProgressBar* ProgressBar_MP;
 	UPROPERTY(EditAnywhere)
 		class UTextBlock* TextBlock_Score;
+	UPROPERTY(EditAnywhere)
+		class UTextBlock* TextBlock_WeaponType;
 
 	UPROPERTY(EditAnywhere)
 		class UAskPickUpItemWidget* UMG_AskPickUpItem;
@@ -37,6 +39,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 		class UShopWidget* UMG_Shop;
+
+	int32 Score;
+
 public:
 	
 	UFUNCTION()
@@ -52,7 +57,9 @@ public:
 
 	UShopWidget* GetShopWidget() { return UMG_Shop; }
 
-	void SetScore(FText NewScore);
+	void AddScore(int32 NewScore);
 
-	FText GetScore() { return TextBlock_Score->GetText(); }
+	int32 GetScore() { return Score; }
+
+	void SetWeaponType(FText NewType) { TextBlock_WeaponType->SetText(NewType); }
 };

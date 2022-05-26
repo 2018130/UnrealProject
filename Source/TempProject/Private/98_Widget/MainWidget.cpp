@@ -34,7 +34,8 @@ void UMainWidget::OnChangedMPPercentEvent(AMovableCharacter* Character)
 	}
 }
 
-void UMainWidget::SetScore(FText NewScore)
+void UMainWidget::AddScore(int32 NewScore)
 {
-	TextBlock_Score->SetText(NewScore);
+	Score += NewScore;
+	TextBlock_Score->SetText(FText::AsNumber(Score));
 }
