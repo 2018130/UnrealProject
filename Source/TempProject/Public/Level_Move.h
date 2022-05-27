@@ -15,20 +15,15 @@ public:
 	// Sets default values for this actor's properties
 	ALevel_Move();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 private:
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere)
 		FName TransferLevelName;
 
-	UPROPERTY()
-		class UBoxComponent* TransferVolume;
+	UPROPERTY(EditAnywhere)
+		class UStaticMeshComponent* StaticMeshComponent;
+
+	UPROPERTY(VisibleAnywhere)
+		class UBoxComponent* BoxComponent;
 
 protected:
 

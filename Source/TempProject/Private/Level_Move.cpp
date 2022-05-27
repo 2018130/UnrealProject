@@ -10,27 +10,14 @@
 ALevel_Move::ALevel_Move()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
-	TransferVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("TransferVolume"));
+	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("TransferVolume"));
+	RootComponent = BoxComponent;
+	BoxComponent->SetCollisionProfileName(TEXT("OverlapOnlyPawn"));
 
-	RootComponent = TransferVolume;
-
-	TransferVolume->SetCollisionProfileName(TEXT("OverlapOnlyPawn"));
-}
-
-// Called when the game starts or when spawned
-void ALevel_Move::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void ALevel_Move::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
+	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
+	StaticMeshComponent->SetupAttachment(RootComponent);
 }
 
 

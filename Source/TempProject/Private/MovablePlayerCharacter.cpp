@@ -340,7 +340,7 @@ float AMovablePlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const
 
 	if(HP <= 0)
 	{
-		UGameplayStatics::OpenLevel(this, "Second_Scene");
+		UGameplayStatics::OpenLevel(this, "Scene_Level1");
 	}
 
 	return Value;
