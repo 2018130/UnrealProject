@@ -3,6 +3,10 @@
 
 #include "Level_Move.h"
 
+#include "MovablePlayerCharacter.h"
+#include "TestPlayerController.h"
+#include "03_GameInstance/MyGameInstance.h"
+#include "98_Widget/MainWidget.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -21,9 +25,13 @@ ALevel_Move::ALevel_Move()
 }
 
 
- void ALevel_Move::NotifyActorBeginOverlap(AActor* OtherActor)
+void ALevel_Move::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
-
-	UGameplayStatics::OpenLevel(GetWorld(), TransferLevelName);
+	UMyGameInstance* GI = GetGameInstance<UMyGameInstance>();
+	
+	if (GI != nullptr) {
+		GI->InitLocalToGIVariable();
+		UGameplayStatics::OpenLevel(GetWorld(), TransferLevelName, false);
+	}
 }

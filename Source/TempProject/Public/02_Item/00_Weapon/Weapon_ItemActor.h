@@ -19,4 +19,7 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		USkeletalMeshComponent* SkeletalMeshComponent;
+
+public:
+	USkeletalMeshComponent* GetMesh() { return SkeletalMeshComponent; }
 };

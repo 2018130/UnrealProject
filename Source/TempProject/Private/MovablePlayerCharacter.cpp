@@ -23,11 +23,11 @@
 #include "Misc/App.h"
 #include "Particles/ParticleSystem.h"
 #include "02_Item/00_Weapon/Weapon_GrenadeActor.h"
+#include "03_GameInstance/MyGameInstance.h"
 #include "Components/SphereComponent.h"
 
 AMovablePlayerCharacter::AMovablePlayerCharacter()
 {
-	Damage = 10;
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
@@ -60,10 +60,42 @@ AMovablePlayerCharacter::AMovablePlayerCharacter()
 void AMovablePlayerCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-	
+
 	CameraBoom->bEnableCameraLag = true;
 	CameraBoom->CameraLagSpeed = LagSpeed;
 	isAttacking = false;
+}
+
+void AMovablePlayerCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	auto GI = GetGameInstance<UMyGameInstance>();
+	
+	if (GI != nullptr) {
+		InitGIVariableToLocal();
+	}
+}
+
+void AMovablePlayerCharacter::InitGIVariableToLocal()
+{
+	auto GI = GetGameInstance<UMyGameInstance>();
+	if (GI != nullptr) {
+		auto Con = GetController<ATestPlayerController>();
+		if(Con != nullptr)
+		{
+			Con->GetMainWidget()->AddScore(GI->GetGI_Score());
+			AddBullet(GI->GetGI_BulletCount());
+			AddMoney(GI->GetGI_Money());
+			SetShootDelay(GI->GetGI_ShootDelay());
+			
+			AddMaxHP(GI->GetGI_MaxHP());
+			AddHP(GI->GetGI_HP());
+			AddMaxMP(GI->GetGI_MaxMP());
+			AddMP(GI->GetGI_MP());
+			AddDamage(GI->GetGI_Damage());
+		}
+	}
 }
 
 void AMovablePlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

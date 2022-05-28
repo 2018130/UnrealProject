@@ -31,6 +31,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 		UAnimationAsset* DeathAsset;
 
+	UPROPERTY(BlueprintReadWrite)
+		UAnimBlueprint* WeaponAnimBPAsset;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -39,7 +42,7 @@ protected:
 	bool IsAttacking;
 
 	FRotator LookPlayerRotation;
-public:	
+public:
 	bool GetDying() { return Dying; }
 
 	UFUNCTION(BlueprintCallable)
@@ -70,4 +73,6 @@ public:
 	void Death();
 
 	void StopFrozen();
+
+	UAnimBlueprint* GetWeaponAnimBPAsset() { return WeaponAnimBPAsset; }
 };

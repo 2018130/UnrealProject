@@ -31,7 +31,6 @@ void ASpawnerActor::Tick(float DeltaTime)
 
 void ASpawnerActor::Spawn()
 {
-	UE_LOG(LogTemp, Log, TEXT("1111"));
 	if (SpawnType != nullptr) {
 		GetWorld()->SpawnActor<AAICharacter>(SpawnType, GetActorLocation(), FRotator::ZeroRotator, FActorSpawnParameters());
 	}

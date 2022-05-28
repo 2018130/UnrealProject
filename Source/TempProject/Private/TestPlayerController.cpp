@@ -4,6 +4,7 @@
 #include "TestPlayerController.h"
 
 #include "MovablePlayerCharacter.h"
+#include "03_GameInstance/MyGameInstance.h"
 #include "98_Widget/MainWidget.h"
 #include "98_Widget/TimerUserWidget.h"
 #include "98_Widget/ZoomTargetPointWidget.h"
@@ -37,8 +38,12 @@ void ATestPlayerController::OnPossess(APawn* InPawn)
 				player->OnChangedHP.Broadcast(player);
 				player->OnChangedMP.Broadcast(player);
 				player->RifleMode();
-				player->AddMoney(0);
-				player->AddBullet(0);
+
+				auto GI = Cast<UMyGameInstance>(GetGameInstance());
+				if(GI != nullptr)
+				{
+					GI->SetPlayer(player);
+				}
 			}
 		}
 	}

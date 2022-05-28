@@ -3,6 +3,9 @@
 
 #include "MovableCharacter.h"
 
+#include "02_Item/00_Weapon/Weapon_ItemActor.h"
+#include "Kismet/KismetSystemLibrary.h"
+
 // Sets default values
 AMovableCharacter::AMovableCharacter()
 {
@@ -11,13 +14,13 @@ AMovableCharacter::AMovableCharacter()
 
 	WeaponActorComponent = CreateDefaultSubobject<UChildActorComponent>(TEXT("WeaponActorComponent"));
 	WeaponActorComponent->SetupAttachment(GetMesh(), "WeaponSocket");
+	
 }
 
 // Called when the game starts or when spawned
 void AMovableCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame

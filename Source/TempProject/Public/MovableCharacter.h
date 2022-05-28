@@ -30,15 +30,15 @@ protected:
 	UPROPERTY(EditAnywhere)
 		UChildActorComponent* WeaponActorComponent;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere)
 		float HP;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere)
 		float MaxHP;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere)
 		float MP;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere)
 		float MaxMP;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere)
 		float Damage;
 public:
 
@@ -65,5 +65,8 @@ public:
 
 	void AddMaxHP(float Value) { MaxHP += Value; }
 
+	void AddMaxMP(float Value) { MaxMP += Value; }
 	float GetDamage() { return Damage; }
+
+	UChildActorComponent* GetWeaponActorComponent() { return WeaponActorComponent; }
 };

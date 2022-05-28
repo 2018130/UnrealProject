@@ -27,6 +27,8 @@ protected:
 
 	virtual void PostInitializeComponents() override;
 
+	virtual void BeginPlay() override;
+
 	UPROPERTY(EditAnywhere)
 		class UAnimMontage* AttackMontage;
 	UPROPERTY(EditAnywhere)
@@ -68,7 +70,7 @@ protected:
 
 	virtual void Tick(float DeltaSeconds) override;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere)
 		float ShootDelay;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -107,8 +109,11 @@ public:
 
 	virtual void NotifyActorEndOverlap(AActor* Otheractor) override;
 
+	int32 GetMoney() { return Money; }
 	void AddMoney(int32 Value);
+	bool CheckMoney(int32 Value) { return Money >= Value; }
 
+	int32 GetBulletCount() { return BulletCount; }
 	void AddBullet(int32 Value);
 
 	float GetShootDelay() { return ShootDelay; }
@@ -117,11 +122,11 @@ public:
 
 	void Shop();
 
-	bool CheckMoney(int32 Value) { return Money >= Value; }
-
 	void RifleMode();
 
 	void GrenadeMode();
+
+	void InitGIVariableToLocal();
 
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 };

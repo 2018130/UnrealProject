@@ -8,6 +8,7 @@
 #include "MovablePlayerCharacter.h"
 #include "MyAIController.h"
 #include "TestPlayerController.h"
+#include "02_Item/00_Weapon/Weapon_ItemActor.h"
 #include "98_Widget/AIProgressBarWidget.h"
 #include "98_Widget/MainWidget.h"
 #include "Components/CapsuleComponent.h"
@@ -30,6 +31,8 @@ AAICharacter::AAICharacter()
 	HPBarWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
 	HPBarWidgetComp->SetVisibility(false);
 
+	ConstructorHelpers::FObjectFinder<UAnimBlueprint>AnimBPAsset(TEXT("AnimBlueprint'/Game/00_Workspace/01_Item/00_Weapon/Rifle_AnimBP.Rifle_AnimBP'"));
+	WeaponAnimBPAsset = AnimBPAsset.Object;
 }
 
 // Called when the game starts or when spawned

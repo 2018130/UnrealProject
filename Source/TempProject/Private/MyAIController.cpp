@@ -6,6 +6,7 @@
 #include "MovableCharacter.h"
 #include "MovablePlayerCharacter.h"
 #include "01_AI/AICharacter.h"
+#include "02_Item/00_Weapon/Weapon_ItemActor.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "98_Widget/AIProgressBarWidget.h"
 
@@ -51,6 +52,12 @@ void AMyAIController::OnPossess(APawn* InPawn)
 	if (AI != nullptr)
 	{
 		RunBehaviorTree(AI->GetBehaviorTree());
+		auto Weapon = Cast<AWeapon_ItemActor>(AI->GetWeaponActorComponent()->GetChildActor());
+		if (Weapon != nullptr)
+		{
+			UKismetSystemLibrary::PrintString(this, AI->GetWeaponAnimBPAsset()->GetBlueprintClass()->GetName());
+			Weapon->GetMesh()->SetAnimInstanceClass(AI->GetWeaponAnimBPAsset()->GetBlueprintClass());
+		}
 	}
 }
 /*
