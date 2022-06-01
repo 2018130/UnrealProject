@@ -90,6 +90,8 @@ protected:
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class AWeapon_GrenadeActor> GrenadeActor;
 
+	UPROPERTY(EditDefaultsOnly)
+		UAnimMontage* Ability_Stun_Montage;
 public:
 
 	UFUNCTION(BlueprintCallable)
@@ -129,4 +131,8 @@ public:
 	void InitGIVariableToLocal();
 
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
+	void Ability_Stun();
+
+	void AbilityEnd();
 };

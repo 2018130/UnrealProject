@@ -55,6 +55,9 @@ AMovablePlayerCharacter::AMovablePlayerCharacter()
 		TEXT("SoundWave'/Game/MilitaryWeapSilver/Sound/Rifle/Wavs/RifleA_Fire01.RifleA_Fire01'"));
 	ShootSound = SoundAsset.Object;
 
+	ConstructorHelpers::FObjectFinder<UAnimMontage>StunMontageAsset(
+		TEXT("AnimMontage'/Game/00_Workspace/02_Animation/Q_Ability_Montage.Q_Ability_Montage'"));
+	Ability_Stun_Montage = StunMontageAsset.Object;
 }
 
 void AMovablePlayerCharacter::PostInitializeComponents()
@@ -124,6 +127,8 @@ void AMovablePlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 	PlayerInputComponent->BindAction("RifleMode", EInputEvent::IE_Pressed, this, &AMovablePlayerCharacter::RifleMode);
 
 	PlayerInputComponent->BindAction("GrenadeMode", EInputEvent::IE_Pressed, this, &AMovablePlayerCharacter::GrenadeMode);
+
+	PlayerInputComponent->BindAction("Ability_Stun", EInputEvent::IE_Released, this, &AMovablePlayerCharacter::Ability_Stun);
 }
 
 void AMovablePlayerCharacter::MoveForward(float Value)
@@ -376,5 +381,42 @@ float AMovablePlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const
 	}
 
 	return Value;
+}
+
+void AMovablePlayerCharacter::Ability_Stun()
+{
+	if(Ability_Stun_Montage != nullptr && !GetMesh()->GetAnimInstance()->IsAnyMontagePlaying())
+	{
+		float time = GetMesh()->GetAnimInstance()->Montage_Play(Ability_Stun_Montage);
+		GetController<ATestPlayerController>()->SetIgnoreMoveInput(true);
+
+		FVector EndVector = GetActorForwardVector() * 50 + GetActorLocation();
+		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypeQuery;
+		ObjectTypeQuery.Add(UEngineTypes::ConvertToObjectType(ECC_GameTraceChannel3));
+		TArray<FHitResult> Hits;
+
+		if(UKismetSystemLibrary::SphereTraceMultiForObjects(this, GetActorLocation(),
+			EndVector, 800, ObjectTypeQuery, false,
+			TArray<AActor*> (), EDrawDebugTrace::ForDuration,
+			Hits, true))
+		{
+			for(int32 i = 0; i < Hits.Num(); i++)
+			{
+				if(Hits[i].GetActor()->IsA<AAICharacter>())
+				{
+					auto AI = Cast<AAICharacter>(Hits[i].GetActor());
+
+					AI->Stun();
+				}
+			}
+		}
+		FTimerHandle TimerHandle;
+		GetWorldTimerManager().SetTimer(TimerHandle, this, &AMovablePlayerCharacter::AbilityEnd, time);
+	}
+}
+
+void AMovablePlayerCharacter::AbilityEnd()
+{
+	GetController<ATestPlayerController>()->SetIgnoreMoveInput(false);
 }
 

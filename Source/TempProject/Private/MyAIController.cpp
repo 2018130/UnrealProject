@@ -32,7 +32,7 @@ AMyAIController::AMyAIController()
 	SenseConfig_Sight->DetectionByAffiliation.bDetectEnemies = true;
 	SenseConfig_Sight->DetectionByAffiliation.bDetectFriendlies = false;
 	SenseConfig_Sight->DetectionByAffiliation.bDetectNeutrals = false;
-	
+
 	GetPerceptionComponent()->ConfigureSense(*SenseConfig_Sight);
 	//GetPerceptionComponent()->OnTargetPerceptionUpdated.AddDynamic(this, &AMyAIController::OnPawnDetected);
 }
@@ -52,11 +52,12 @@ void AMyAIController::OnPossess(APawn* InPawn)
 	if (AI != nullptr)
 	{
 		RunBehaviorTree(AI->GetBehaviorTree());
-		auto Weapon = Cast<AWeapon_ItemActor>(AI->GetWeaponActorComponent()->GetChildActor());
+
+		AWeapon_ItemActor* Weapon = Cast<AWeapon_ItemActor>(AI->GetWeaponActorComponent()->GetChildActor());
 		if (Weapon != nullptr)
 		{
-			UKismetSystemLibrary::PrintString(this, AI->GetWeaponAnimBPAsset()->GetBlueprintClass()->GetName());
-			Weapon->GetMesh()->SetAnimInstanceClass(AI->GetWeaponAnimBPAsset()->GetBlueprintClass());
+			Weapon->GetMesh()->SetAnimationMode(EAnimationMode::AnimationCustomMode);
+			Weapon->GetMesh()->SetAnimInstanceClass(AI->GetWeaponAnimBPAsset()->GetAnimBlueprintGeneratedClass());
 		}
 	}
 }

@@ -31,8 +31,13 @@ AAICharacter::AAICharacter()
 	HPBarWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
 	HPBarWidgetComp->SetVisibility(false);
 
-	ConstructorHelpers::FObjectFinder<UAnimBlueprint>AnimBPAsset(TEXT("AnimBlueprint'/Game/00_Workspace/01_Item/00_Weapon/Rifle_AnimBP.Rifle_AnimBP'"));
+	ConstructorHelpers::FObjectFinder<UAnimBlueprint>AnimBPAsset(
+		TEXT("AnimBlueprint'/Game/00_Workspace/01_Item/00_Weapon/Rifle_AnimBP.Rifle_AnimBP'"));
 	WeaponAnimBPAsset = AnimBPAsset.Object;
+
+	ConstructorHelpers::FObjectFinder<UAnimMontage>StunMontageAsset(
+		TEXT("AnimMontage'/Game/00_Workspace/00_AI/Stun_Idle_Retargeted_Montage.Stun_Idle_Retargeted_Montage'"));
+	StunMontage = StunMontageAsset.Object;
 }
 
 // Called when the game starts or when spawned
@@ -130,5 +135,28 @@ void AAICharacter::StopFrozen()
 	if(!GetMesh()->GetAnimInstance()->Montage_IsPlaying(Hit_ReactMontage))
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 700;
+	}
+}
+
+void AAICharacter::Stun()
+{
+	if(StunMontage != nullptr)
+	{
+		if(IsAttacking)
+		{
+			IsAttacking = false;
+		}
+		float time = GetMesh()->GetAnimInstance()->Montage_Play(StunMontage,0.5, EMontagePlayReturnType::Duration);
+		GetController<AAIController>()->GetBrainComponent()->StopLogic("Stuned");
+
+		FTimerHandle TimerHandle;
+		GetWorldTimerManager().SetTimer(TimerHandle, this, &AAICharacter::StunEnd, time);
+	}
+}
+
+void AAICharacter::StunEnd()
+{
+	if (!GetMesh()->GetAnimInstance()->Montage_IsPlaying(StunMontage)) {
+		GetController<AAIController>()->RunBehaviorTree(BehaviorTree);
 	}
 }

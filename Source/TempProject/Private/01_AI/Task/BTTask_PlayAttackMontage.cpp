@@ -45,7 +45,7 @@ void UBTTask_PlayAttackMontage::TickTask(UBehaviorTreeComponent& OwnerComp, uint
 			if (target != nullptr)
 			{
 				auto Target = Cast<AMovablePlayerCharacter>(target);
-				if (Target != nullptr) {
+				if (Target != nullptr && AIController->GetPawn<AAICharacter>()->GetIsAttacking()) {
 					Target->TakeDamage(AIController->GetPawn<AAICharacter>()->GetDamage() * 0.1, FDamageEvent(), AIController, nullptr);
 
 					FRotator ToPlayerRot = (Target->GetActorLocation() - AIController->GetPawn<AAICharacter>()->GetActorLocation()).Rotation();

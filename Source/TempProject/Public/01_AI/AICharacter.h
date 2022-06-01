@@ -31,9 +31,11 @@ protected:
 	UPROPERTY(EditAnywhere)
 		UAnimationAsset* DeathAsset;
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly)
 		UAnimBlueprint* WeaponAnimBPAsset;
 
+	UPROPERTY(EditDefaultsOnly)
+		UAnimMontage* StunMontage;
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -51,6 +53,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 		FRotator GetLookPlayerRotation() { return LookPlayerRotation; }
 
+	UFUNCTION(BlueprintCallable)
 	void SetIsAttacking(bool Value) { IsAttacking = Value; }
 
 	void SetLookPlayerRotation(FRotator NewRot) { LookPlayerRotation = NewRot; }
@@ -75,4 +78,8 @@ public:
 	void StopFrozen();
 
 	UAnimBlueprint* GetWeaponAnimBPAsset() { return WeaponAnimBPAsset; }
+
+	void Stun();
+
+	void StunEnd();
 };
