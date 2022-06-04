@@ -13,43 +13,14 @@ AWeapon_GrenadeActor::AWeapon_GrenadeActor()
 {
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	RootComponent = StaticMeshComponent;
-
 }
 
 void AWeapon_GrenadeActor::BeginPlay()
 {
 	Super::BeginPlay();
-	auto Info = DataTable->FindRow<FWeapon>(ItemCode, "Cannot Find");
 
 	InitGenericItemInformation();
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AWeapon_GrenadeActor::Explosion, 3.0f, false);
-}
-
-#if WITH_EDITOR
-void AWeapon_GrenadeActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
-{
-	Super::PostEditChangeProperty(PropertyChangedEvent);
-
-	InitGenericItemInformation();
-}
-#endif
-
-void AWeapon_GrenadeActor::InitGenericItemInformation()
-{
-	auto Info = DataTable->FindRow<FWeapon>(ItemCode, "Cannot Find");
-
-	if (Info != nullptr)
-	{
-		GenericItemInformation.ItemCode = Info->ItemCode;
-		GenericItemInformation.ItemActorObject = Info->ItemActorObject;
-		GenericItemInformation.ItemDescription = Info->ItemDescription;
-		GenericItemInformation.ItemName = Info->ItemName;
-
-		if (GenericItemInformation.SharedPtr.IsValid() == false) {
-			FWeapon* ItemInfo = new FWeapon(*Info);
-			GenericItemInformation.SharedPtr = MakeShareable(ItemInfo);
-		}
-	}
 }
 
 void AWeapon_GrenadeActor::Explosion()
@@ -64,7 +35,6 @@ void AWeapon_GrenadeActor::Explosion()
 			if (player != nullptr) {
 				float dam = ((FWeapon*)GenericItemInformation.SharedPtr.Get())->Damage + player->GetDamage();
 				Cast<AAICharacter>(Hits[i].GetActor())->TakeDamage(dam, FDamageEvent(), player->GetController(), nullptr);
-				UKismetSystemLibrary::PrintString(this, FString::FormatAsNumber(dam));
 			}
 		}
 	}
@@ -79,4 +49,21 @@ void AWeapon_GrenadeActor::Explosion()
 	}
 
 	Destroy();
+}
+
+void AWeapon_GrenadeActor::InitGenericItemInformation()
+{
+	Super::InitGenericItemInformation();
+
+	if (!GenericItemInformation.SharedPtr.IsValid())
+	{
+		auto ItemInfo = DataTable->FindRow<FWeapon>(ItemCode, "Cannot Find");
+		if (ItemInfo != nullptr)
+		{
+			ItemInfo->ItemType = EItemType::WEAPON;
+			FWeapon* Info = new FWeapon(*ItemInfo);
+			GenericItemInformation.SharedPtr = MakeShareable(Info);
+			UE_LOG(LogTemp, Log, TEXT("22222222-"));
+		}
+	}
 }

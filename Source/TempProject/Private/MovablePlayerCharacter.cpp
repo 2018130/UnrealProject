@@ -23,6 +23,7 @@
 #include "Misc/App.h"
 #include "Particles/ParticleSystem.h"
 #include "02_Item/00_Weapon/Weapon_GrenadeActor.h"
+#include "02_Item/01_Consume/Consume_ItemActor.h"
 #include "03_GameInstance/MyGameInstance.h"
 #include "Components/SphereComponent.h"
 
@@ -159,6 +160,16 @@ void AMovablePlayerCharacter::PickUp()
 		if (Hits[i]->IsA<AItem_BulletActor>()) {
 			AddBullet(30);
 			Hits[i]->Destroy();
+			return;
+		}
+
+		if(Hits[i]->IsA<AConsume_ItemActor>())
+		{
+			auto Potion = Cast<AConsume_ItemActor>(Hits[i]);
+			AddHP(Potion->GetRecoverHP());
+			AddMP(Potion->GetRecoverMP());
+			Hits[i]->Destroy();
+			return;
 		}
 	}
 }
@@ -263,7 +274,7 @@ void AMovablePlayerCharacter::Shoot()
 		}
 	}else if(WeaponType == EWeaponType::GRENADE)
 	{
-		if(BulletCount >= 1000)
+		if(BulletCount >= 10)
 		{
 			auto Grenade = GetWorld()->SpawnActor<AWeapon_GrenadeActor>(GrenadeActor, GetActorLocation() + 100, GetActorRotation());
 			Grenade->SetOnwer(this);
@@ -272,30 +283,28 @@ void AMovablePlayerCharacter::Shoot()
 
 			Grenade->GetMeshComponent()->AddForce(Vec * 100000 * Grenade->GetMeshComponent()->GetMass());
 
-			AddBullet(-1000);
+			AddBullet(-10);
 		}else
 		{
-			UKismetSystemLibrary::PrintString(this, "Requires 1000 bullets");
+			UKismetSystemLibrary::PrintString(this, "Requires 10 bullets");
 		}
 	}
 }
 
 void AMovablePlayerCharacter::NotifyActorBeginOverlap(AActor* Otheractor)
 {
-	auto Bullet = Cast<AItemActor>(Otheractor);
-	if (Bullet != nullptr) {
-		auto MainWidget = GetController<ATestPlayerController>()->GetMainWidget();
-		if (MainWidget != nullptr) {
+	auto MainWidget = GetController<ATestPlayerController>()->GetMainWidget();
+	if (MainWidget != nullptr) {
+		if(Otheractor->IsA<AItemActor>())
 			MainWidget->GetAskPickUpItemWidget()->SetVisibility(ESlateVisibility::Visible);
-		}
 	}
 }
 
 void AMovablePlayerCharacter::NotifyActorEndOverlap(AActor* Otheractor)
 {
-	auto Bullet = Cast<AItemActor>(Otheractor);
-	if (Bullet != nullptr) {
-		auto MainWidget = GetController<ATestPlayerController>()->GetMainWidget();
+	auto Con = GetController<ATestPlayerController>();
+	if (Con != nullptr) {
+		auto MainWidget = Con->GetMainWidget();
 		if (MainWidget != nullptr) {
 			MainWidget->GetAskPickUpItemWidget()->SetVisibility(ESlateVisibility::Hidden);
 		}

@@ -10,6 +10,12 @@
 /**
  * 
  */
+UENUM(BlueprintType)
+enum class EItemType : uint8
+ {
+	 WEAPON,
+	 CONSUME,
+ };
 
 USTRUCT(BlueprintType)
 struct FItemInformation : public FTableRowBase{
@@ -20,6 +26,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		FName ItemCode;
+
+	UPROPERTY(EditAnywhere)
+	EItemType ItemType;
 
 	UPROPERTY(EditAnywhere)
 		FString ItemName;
@@ -42,6 +51,9 @@ public:
 		FName ItemCode;
 
 	UPROPERTY(EditAnywhere)
+		EItemType ItemType;
+
+	UPROPERTY(EditAnywhere)
 		FString ItemName;
 
 	UPROPERTY(EditAnywhere)
@@ -59,6 +71,16 @@ public:
 USTRUCT(BlueprintType)
 struct FBullet : public FItemInformation {
 	GENERATED_BODY()
+};
+
+USTRUCT(BlueprintType)
+struct FConsume : public FItemInformation {
+	GENERATED_BODY()
+public:
+	UPROPERTY(EditAnywhere)
+		float RecoverHP;
+	UPROPERTY(EditAnywhere)
+		float RecoverMP;
 };
 
 UCLASS()

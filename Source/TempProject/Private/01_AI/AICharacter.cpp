@@ -9,6 +9,7 @@
 #include "MyAIController.h"
 #include "TestPlayerController.h"
 #include "02_Item/00_Weapon/Weapon_ItemActor.h"
+#include "02_Item/01_Consume/Consume_ItemActor.h"
 #include "98_Widget/AIProgressBarWidget.h"
 #include "98_Widget/MainWidget.h"
 #include "Components/CapsuleComponent.h"
@@ -94,6 +95,37 @@ float AAICharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 			Dying = true;
 			GetCapsuleComponent()->SetCollisionProfileName("Spectator");
 			GetCharacterMovement()->StopActiveMovement();
+
+			int32 Sniffling = FMath::RandRange(1, 20);
+			switch (Sniffling)
+			{
+			case 1:
+				if(HPPotionObj != nullptr)
+				{
+					GetWorld()->SpawnActor<AConsume_ItemActor>(HPPotionObj, GetActorLocation(), FRotator::ZeroRotator, FActorSpawnParameters());
+				}
+				break;
+			case 2:
+				if (MPPotionObj != nullptr)
+				{
+					GetWorld()->SpawnActor<AConsume_ItemActor>(MPPotionObj, GetActorLocation(), FRotator::ZeroRotator, FActorSpawnParameters());
+				}
+				break;
+			case 3:
+				if (HPPotionObj != nullptr)
+				{
+					GetWorld()->SpawnActor<AConsume_ItemActor>(HPPotionObj, GetActorLocation(), FRotator::ZeroRotator, FActorSpawnParameters());
+				}
+				if (MPPotionObj != nullptr)
+				{
+					FVector SpawnLocation = GetActorLocation();
+					SpawnLocation.Y += 40;
+					SpawnLocation.X += 40;
+					GetWorld()->SpawnActor<AConsume_ItemActor>(MPPotionObj, SpawnLocation, FRotator::ZeroRotator, FActorSpawnParameters());
+				}
+				break;
+			}
+
 			auto Player = EventInstigator->GetPawn<AMovablePlayerCharacter>();
 			if (Player != nullptr)
 			{

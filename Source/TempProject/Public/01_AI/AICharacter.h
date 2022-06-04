@@ -36,6 +36,13 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 		UAnimMontage* StunMontage;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class AConsume_ItemActor> HPPotionObj;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class AConsume_ItemActor> MPPotionObj;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 

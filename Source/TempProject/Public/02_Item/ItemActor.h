@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ItemTypes.h"
+#include "Engine/DataTable.h"
 #include "GameFramework/Actor.h"
 #include "ItemActor.generated.h"
 
@@ -23,5 +25,20 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+protected:
+	UPROPERTY(EditAnywhere)
+		FName ItemCode;
+	UPROPERTY(EditAnywhere)
+		UDataTable* DataTable;
+	UPROPERTY(VisibleAnywhere)
+		FGenericItemInformation GenericItemInformation;
+public:
+
+#if WITH_EDITOR
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
+
+	virtual void InitGenericItemInformation();
 
 };
