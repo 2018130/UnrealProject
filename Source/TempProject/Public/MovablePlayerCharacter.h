@@ -55,6 +55,8 @@ protected:
 
 	EWeaponType WeaponType;
 
+	bool IsRunning;
+
 	int32 Money;
 
 	
@@ -92,6 +94,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 		UAnimMontage* Ability_Stun_Montage;
+	UPROPERTY(EditDefaultsOnly)
+		UAnimMontage* RollMontage;
 public:
 
 	UFUNCTION(BlueprintCallable)
@@ -135,4 +139,10 @@ public:
 	void Ability_Stun();
 
 	void AbilityEnd();
+
+	void Run();
+
+	void StopRun();
+
+	void Roll();
 };

@@ -118,6 +118,13 @@ void AMovablePlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AMovablePlayerCharacter::Jump);
 
+
+	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &AMovablePlayerCharacter::Run);
+	PlayerInputComponent->BindAction("Run", IE_Released, this, &AMovablePlayerCharacter::StopRun);
+
+
+	PlayerInputComponent->BindAction("Roll", EInputEvent::IE_Pressed, this, &AMovablePlayerCharacter::Roll);
+
 	PlayerInputComponent->BindAction("Zoomin", EInputEvent::IE_Pressed, ZoominComponent, &UZoominComponent::Zoom);
 	PlayerInputComponent->BindAction("Zoomin", EInputEvent::IE_Released, ZoominComponent, &UZoominComponent::ZoomOut);
 
@@ -190,6 +197,11 @@ void AMovablePlayerCharacter::Tick(float DeltaSeconds)
 		FVector RotVector = FRotationMatrix(FRotator(Rot.Pitch, Rot.Yaw, Rot.Roll)).GetUnitAxis(EAxis::X);
 		FVector EndVector = RotVector * Range + StartVector;
 		DrawDebugLine(GetWorld(), StartVector, EndVector, FColor::Red);
+	}
+
+	if(IsRunning)
+	{
+		AddMP(-5 * DeltaSeconds);
 	}
 }
 
@@ -427,5 +439,29 @@ void AMovablePlayerCharacter::Ability_Stun()
 void AMovablePlayerCharacter::AbilityEnd()
 {
 	GetController<ATestPlayerController>()->SetIgnoreMoveInput(false);
+}
+
+void AMovablePlayerCharacter::Run()
+{
+	if (MP > 0) {
+		GetCharacterMovement()->MaxWalkSpeed += 200;
+		IsRunning = true;
+	}
+}
+
+void AMovablePlayerCharacter::StopRun()
+{
+	if (GetCharacterMovement()->MaxWalkSpeed == 800) {
+		GetCharacterMovement()->MaxWalkSpeed -= 200;
+		IsRunning = false;
+	}
+}
+
+void AMovablePlayerCharacter::Roll()
+{
+	if (RollMontage != nullptr) {
+		GetMesh()->HideBoneByName("weapon_l", EPhysBodyOp::PBO_MAX);
+		GetMesh()->GetAnimInstance()->Montage_Play(RollMontage);
+	}
 }
 

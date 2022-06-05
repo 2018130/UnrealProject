@@ -19,6 +19,8 @@ protected:
 	float MaxSPD;
 
 	UPROPERTY(EditAnywhere)
+		float HitReactionRate;
+	UPROPERTY(EditAnywhere)
 		class UBehaviorTree* BehaviorTree;
 	UPROPERTY(EditAnywhere)
 		class ATargetPoint* PointA;

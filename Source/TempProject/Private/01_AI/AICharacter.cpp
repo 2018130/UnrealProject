@@ -71,7 +71,7 @@ float AAICharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 		if(Hit_ReactMontage != nullptr)
 		{
 			
-			float time = GetMesh()->GetAnimInstance()->Montage_Play(Hit_ReactMontage, 1.0f, EMontagePlayReturnType::Duration);
+			float time = GetMesh()->GetAnimInstance()->Montage_Play(Hit_ReactMontage, HitReactionRate, EMontagePlayReturnType::Duration);
 			if (GetCharacterMovement()->MaxWalkSpeed != 0) {
 				MaxSPD = GetCharacterMovement()->MaxWalkSpeed;
 			}
@@ -178,7 +178,7 @@ void AAICharacter::Stun()
 		{
 			IsAttacking = false;
 		}
-		float time = GetMesh()->GetAnimInstance()->Montage_Play(StunMontage,0.5, EMontagePlayReturnType::Duration);
+		float time = GetMesh()->GetAnimInstance()->Montage_Play(StunMontage, 0.5, EMontagePlayReturnType::Duration);
 		GetController<AAIController>()->GetBrainComponent()->StopLogic("Stuned");
 
 		FTimerHandle TimerHandle;
