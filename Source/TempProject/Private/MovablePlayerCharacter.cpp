@@ -459,9 +459,20 @@ void AMovablePlayerCharacter::StopRun()
 
 void AMovablePlayerCharacter::Roll()
 {
-	if (RollMontage != nullptr) {
+	if (RollMontage != nullptr && !GetMesh()->GetAnimInstance()->Montage_IsPlaying(RollMontage)) {
 		GetMesh()->HideBoneByName("weapon_l", EPhysBodyOp::PBO_MAX);
-		GetMesh()->GetAnimInstance()->Montage_Play(RollMontage);
+		float time = GetMesh()->GetAnimInstance()->Montage_Play(RollMontage, 1.0f, EMontagePlayReturnType::Duration);
+
+		FTimerHandle TimerHandle;
+		GetWorldTimerManager().SetTimer(TimerHandle, this, &AMovablePlayerCharacter::RollEnd, time);
 	}
 }
+
+void AMovablePlayerCharacter::RollEnd()
+{
+	if (!GetMesh()->GetAnimInstance()->Montage_IsPlaying(RollMontage)) {
+		GetMesh()->UnHideBoneByName("weapon_l");
+	}
+}
+
 //

@@ -145,4 +145,6 @@ public:
 	void StopRun();
 
 	void Roll();
+
+	void RollEnd();
 };
