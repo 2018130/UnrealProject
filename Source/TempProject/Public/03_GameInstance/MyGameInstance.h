@@ -38,6 +38,8 @@ protected:
 	UPROPERTY(BlueprintReadWrite)
 		float GI_Damage;
 public:
+	virtual void Init() override;
+
 	virtual FGameInstancePIEResult InitializeForPlayInEditor(int32 PIEInstanceIndex, const FGameInstancePIEParameters& Params) override;
 
 	void InitLocalToGIVariable();

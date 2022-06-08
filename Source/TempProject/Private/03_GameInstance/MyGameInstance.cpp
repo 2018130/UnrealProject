@@ -8,8 +8,23 @@
 #include "98_Widget/MainWidget.h"
 #include "Kismet/GameplayStatics.h"
 
+void UMyGameInstance::Init()
+{
+	Super::Init();
+
+	GI_Score = 0;
+	GI_BulletCount = 0;
+	GI_Money = 0;
+	GI_ShootDelay = 0.4;
+	GI_HP = 100;
+	GI_MaxHP = 100;
+	GI_MP = 100;
+	GI_MaxMP = 100;
+	GI_Damage = 20;
+}
+
 FGameInstancePIEResult UMyGameInstance::InitializeForPlayInEditor(int32 PIEInstanceIndex,
-	const FGameInstancePIEParameters& Params)
+                                                                  const FGameInstancePIEParameters& Params)
 {
 	GI_Score = 0;
 	GI_BulletCount = 0;

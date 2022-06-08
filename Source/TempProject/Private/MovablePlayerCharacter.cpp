@@ -73,12 +73,6 @@ void AMovablePlayerCharacter::PostInitializeComponents()
 void AMovablePlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	auto GI = GetGameInstance<UMyGameInstance>();
-	
-	if (GI != nullptr) {
-		InitGIVariableToLocal();
-	}
 }
 
 void AMovablePlayerCharacter::InitGIVariableToLocal()
@@ -408,31 +402,34 @@ void AMovablePlayerCharacter::Ability_Stun()
 {
 	if(Ability_Stun_Montage != nullptr && !GetMesh()->GetAnimInstance()->IsAnyMontagePlaying())
 	{
-		float time = GetMesh()->GetAnimInstance()->Montage_Play(Ability_Stun_Montage);
-		GetController<ATestPlayerController>()->SetIgnoreMoveInput(true);
+		if (MP >= 20) {
+			AddMP(-20);
+			float time = GetMesh()->GetAnimInstance()->Montage_Play(Ability_Stun_Montage);
+			GetController<ATestPlayerController>()->SetIgnoreMoveInput(true);
 
-		FVector EndVector = GetActorForwardVector() * 50 + GetActorLocation();
-		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypeQuery;
-		ObjectTypeQuery.Add(UEngineTypes::ConvertToObjectType(ECC_GameTraceChannel3));
-		TArray<FHitResult> Hits;
+			FVector EndVector = GetActorForwardVector() * 50 + GetActorLocation();
+			TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypeQuery;
+			ObjectTypeQuery.Add(UEngineTypes::ConvertToObjectType(ECC_GameTraceChannel3));
+			TArray<FHitResult> Hits;
 
-		if(UKismetSystemLibrary::SphereTraceMultiForObjects(this, GetActorLocation(),
-			EndVector, 800, ObjectTypeQuery, false,
-			TArray<AActor*> (), EDrawDebugTrace::ForDuration,
-			Hits, true))
-		{
-			for(int32 i = 0; i < Hits.Num(); i++)
+			if (UKismetSystemLibrary::SphereTraceMultiForObjects(this, GetActorLocation(),
+				EndVector, 800, ObjectTypeQuery, false,
+				TArray<AActor*>(), EDrawDebugTrace::ForDuration,
+				Hits, true))
 			{
-				if(Hits[i].GetActor()->IsA<AAICharacter>())
+				for (int32 i = 0; i < Hits.Num(); i++)
 				{
-					auto AI = Cast<AAICharacter>(Hits[i].GetActor());
+					if (Hits[i].GetActor()->IsA<AAICharacter>())
+					{
+						auto AI = Cast<AAICharacter>(Hits[i].GetActor());
 
-					AI->Stun();
+						AI->Stun();
+					}
 				}
 			}
+			FTimerHandle TimerHandle;
+			GetWorldTimerManager().SetTimer(TimerHandle, this, &AMovablePlayerCharacter::AbilityEnd, time);
 		}
-		FTimerHandle TimerHandle;
-		GetWorldTimerManager().SetTimer(TimerHandle, this, &AMovablePlayerCharacter::AbilityEnd, time);
 	}
 }
 
@@ -460,11 +457,14 @@ void AMovablePlayerCharacter::StopRun()
 void AMovablePlayerCharacter::Roll()
 {
 	if (RollMontage != nullptr && !GetMesh()->GetAnimInstance()->Montage_IsPlaying(RollMontage)) {
-		GetMesh()->HideBoneByName("weapon_l", EPhysBodyOp::PBO_MAX);
-		float time = GetMesh()->GetAnimInstance()->Montage_Play(RollMontage, 1.0f, EMontagePlayReturnType::Duration);
+		if (MP >= 5) {
+			AddMP(-5);
+			GetMesh()->HideBoneByName("weapon_l", EPhysBodyOp::PBO_MAX);
+			float time = GetMesh()->GetAnimInstance()->Montage_Play(RollMontage, 1.0f, EMontagePlayReturnType::Duration);
 
-		FTimerHandle TimerHandle;
-		GetWorldTimerManager().SetTimer(TimerHandle, this, &AMovablePlayerCharacter::RollEnd, time);
+			FTimerHandle TimerHandle;
+			GetWorldTimerManager().SetTimer(TimerHandle, this, &AMovablePlayerCharacter::RollEnd, time);
+		}
 	}
 }
 
