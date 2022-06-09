@@ -7,6 +7,7 @@
 #include "MovablePlayerCharacter.h"
 #include "01_AI/AICharacter.h"
 #include "02_Item/00_Weapon/Weapon_ItemActor.h"
+#include "03_GameInstance/MyGameInstance.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "98_Widget/AIProgressBarWidget.h"
 
@@ -58,6 +59,12 @@ void AMyAIController::OnPossess(APawn* InPawn)
 		{
 			Weapon->GetMesh()->SetAnimationMode(EAnimationMode::AnimationCustomMode);
 			Weapon->GetMesh()->SetAnimInstanceClass(AI->GetWeaponAnimBPAsset()->GetAnimBlueprintGeneratedClass());
+		}
+
+		auto GI = GetGameInstance<UMyGameInstance>();
+		if(GI != nullptr)
+		{
+			GetBlackboardComponent()->SetValueAsObject("Target", GI->GetPlayer());
 		}
 	}
 }

@@ -147,4 +147,8 @@ public:
 	void Roll();
 
 	void RollEnd();
+
+	void Zoom();
+
+	void ZoomOut();
 };

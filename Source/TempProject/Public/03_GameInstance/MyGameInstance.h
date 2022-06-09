@@ -56,4 +56,6 @@ public:
 	float GetGI_MP() { return GI_MP; }
 	float GetGI_MaxMP() { return GI_MaxMP; }
 	float GetGI_Damage() { return GI_Damage; }
+
+	AMovablePlayerCharacter* GetPlayer() { return Player; }
 };

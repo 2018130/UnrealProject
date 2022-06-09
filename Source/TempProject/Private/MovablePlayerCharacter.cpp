@@ -119,8 +119,8 @@ void AMovablePlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 
 	PlayerInputComponent->BindAction("Roll", EInputEvent::IE_Pressed, this, &AMovablePlayerCharacter::Roll);
 
-	PlayerInputComponent->BindAction("Zoomin", EInputEvent::IE_Pressed, ZoominComponent, &UZoominComponent::Zoom);
-	PlayerInputComponent->BindAction("Zoomin", EInputEvent::IE_Released, ZoominComponent, &UZoominComponent::ZoomOut);
+	PlayerInputComponent->BindAction("Zoomin", EInputEvent::IE_Pressed, this, &AMovablePlayerCharacter::Zoom);
+	PlayerInputComponent->BindAction("Zoomin", EInputEvent::IE_Released, this, &AMovablePlayerCharacter::ZoomOut);
 
 	PlayerInputComponent->BindAction("PickUp", EInputEvent::IE_Pressed, this, &AMovablePlayerCharacter::PickUp);
 
@@ -191,6 +191,12 @@ void AMovablePlayerCharacter::Tick(float DeltaSeconds)
 		FVector RotVector = FRotationMatrix(FRotator(Rot.Pitch, Rot.Yaw, Rot.Roll)).GetUnitAxis(EAxis::X);
 		FVector EndVector = RotVector * Range + StartVector;
 		DrawDebugLine(GetWorld(), StartVector, EndVector, FColor::Red);
+
+		auto Con = GetController<ATestPlayerController>();
+		auto Rotation = GetActorRotation();
+		Rotation.Yaw = Controller->GetControlRotation().Yaw;
+		SetActorRotation(Rotation);
+		
 	}
 
 	if(IsRunning)
@@ -473,6 +479,16 @@ void AMovablePlayerCharacter::RollEnd()
 	if (!GetMesh()->GetAnimInstance()->Montage_IsPlaying(RollMontage)) {
 		GetMesh()->UnHideBoneByName("weapon_l");
 	}
+}
+
+void AMovablePlayerCharacter::Zoom()
+{
+	ZoominComponent->Zoom();
+}
+
+void AMovablePlayerCharacter::ZoomOut()
+{
+	ZoominComponent->ZoomOut();
 }
 
 //

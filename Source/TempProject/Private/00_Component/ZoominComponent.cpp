@@ -19,7 +19,7 @@ UZoominComponent::UZoominComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 
 	IsZoomIn = false;
 	// ...
@@ -36,23 +36,6 @@ void UZoominComponent::BeginPlay()
 }
 
 
-// Called every frame
-void UZoominComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-	auto Player = GetOwner<AMovablePlayerCharacter>();
-	if (IsZoomIn && Player != nullptr)
-	{
-		auto Controller = Player->GetController<ATestPlayerController>();
-		if (Controller != nullptr){
-			auto Rotation = Player->GetActorRotation();
-			Rotation.Yaw = Controller->GetControlRotation().Yaw;
-			Player->SetActorRotation(Rotation);
-		}
-	}
-}
 
 void UZoominComponent::Zoom()
 {
@@ -75,7 +58,7 @@ void UZoominComponent::Zoom()
 			if (Controller != nullptr)
 			{
 				Controller->GetZoomTargetPointWidget()->SetVisibility(ESlateVisibility::Visible);
-				Player->GetCharacterMovement()->bOrientRotationToMovement = false;
+				//Player->GetCharacterMovement()->bOrientRotationToMovement = false;
 				Player->GetCharacterMovement()->MaxWalkSpeed -= 300;
 				IsZoomIn = true;
 			}
