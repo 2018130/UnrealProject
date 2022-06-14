@@ -9,7 +9,7 @@
 AItemActor::AItemActor()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 }
 
@@ -18,12 +18,6 @@ void AItemActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-}
-
-// Called every frame
-void AItemActor::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }
 
 #if WITH_EDITOR

@@ -68,6 +68,7 @@ void AMyAIController::OnPossess(APawn* InPawn)
 		}
 	}
 }
+
 /*
 void AMyAIController::OnPawnDetected(AActor* Target, FAIStimulus Stimulus)
 {

@@ -25,6 +25,7 @@
 #include "02_Item/00_Weapon/Weapon_GrenadeActor.h"
 #include "02_Item/01_Consume/Consume_ItemActor.h"
 #include "03_GameInstance/MyGameInstance.h"
+#include "98_Widget/ZoomTargetPointWidget.h"
 #include "Components/SphereComponent.h"
 
 AMovablePlayerCharacter::AMovablePlayerCharacter()
@@ -191,12 +192,12 @@ void AMovablePlayerCharacter::Tick(float DeltaSeconds)
 		FVector RotVector = FRotationMatrix(FRotator(Rot.Pitch, Rot.Yaw, Rot.Roll)).GetUnitAxis(EAxis::X);
 		FVector EndVector = RotVector * Range + StartVector;
 		DrawDebugLine(GetWorld(), StartVector, EndVector, FColor::Red);
-
+	}else
+	{
 		auto Con = GetController<ATestPlayerController>();
 		auto Rotation = GetActorRotation();
 		Rotation.Yaw = Controller->GetControlRotation().Yaw;
 		SetActorRotation(Rotation);
-		
 	}
 
 	if(IsRunning)
@@ -239,6 +240,8 @@ void AMovablePlayerCharacter::Shoot()
 		}
 
 		AddBullet(-1);
+		SpreadZoomInWidget();
+
 		UGameplayStatics::PlaySoundAtLocation(this, ShootSound, this->GetActorLocation(), this->GetViewRotation());
 		auto Con = GetController<ATestPlayerController>();
 
@@ -300,6 +303,15 @@ void AMovablePlayerCharacter::Shoot()
 		{
 			UKismetSystemLibrary::PrintString(this, "Requires 10 bullets");
 		}
+	}
+}
+
+void AMovablePlayerCharacter::SpreadZoomInWidget()
+{
+	auto Con = GetController<ATestPlayerController>();
+	if(Con != nullptr)
+	{
+		Con->GetZoomTargetPointWidget()->Spread();
 	}
 }
 

@@ -10,6 +10,7 @@
 #include "TestPlayerController.h"
 #include "02_Item/00_Weapon/Weapon_ItemActor.h"
 #include "02_Item/01_Consume/Consume_ItemActor.h"
+#include "03_GameInstance/MyGameInstance.h"
 #include "98_Widget/AIProgressBarWidget.h"
 #include "98_Widget/MainWidget.h"
 #include "Components/CapsuleComponent.h"
@@ -21,7 +22,7 @@
 AAICharacter::AAICharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	//PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	GetCapsuleComponent()->SetCollisionProfileName("EnemyPreset");
 
@@ -95,6 +96,12 @@ float AAICharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 			Dying = true;
 			GetCapsuleComponent()->SetCollisionProfileName("Spectator");
 			GetCharacterMovement()->StopActiveMovement();
+
+			auto GI = Cast<UMyGameInstance>(GetGameInstance());
+			if(GI != nullptr)
+			{
+				GI->SetGI_AICount(GI->GetGI_AICount() - 1);
+			}
 
 			int32 Sniffling = FMath::RandRange(1, 20);
 			switch (Sniffling)

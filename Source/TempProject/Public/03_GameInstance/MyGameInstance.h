@@ -19,6 +19,9 @@ protected:
 	class AMovablePlayerCharacter* Player;
 
 	UPROPERTY(BlueprintReadWrite)
+		int32 GI_AICount;
+
+	UPROPERTY(BlueprintReadWrite)
 		int32 GI_Score;
 	UPROPERTY(BlueprintReadWrite)
 		int32 GI_BulletCount;
@@ -45,6 +48,9 @@ public:
 	void InitLocalToGIVariable();
 
 	void SetPlayer(class AMovablePlayerCharacter* NewPlayer) { Player = NewPlayer; }
+
+	int32 GetGI_AICount() { return GI_AICount; }
+	void SetGI_AICount(int32 Value) { GI_AICount = Value; }
 
 	int32 GetGI_Score() { return GI_Score; }
 	int32 GetGI_BulletCount() { return GI_BulletCount; }

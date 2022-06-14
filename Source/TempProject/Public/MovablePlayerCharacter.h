@@ -134,6 +134,8 @@ public:
 
 	void InitGIVariableToLocal();
 
+	void SpreadZoomInWidget();
+
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 	void Ability_Stun();

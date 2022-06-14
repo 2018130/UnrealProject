@@ -5,6 +5,7 @@
 
 AWeapon_ItemActor::AWeapon_ItemActor()
 {
+
 	SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComponent"));
 	RootComponent = SkeletalMeshComponent;
 }

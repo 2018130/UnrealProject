@@ -13,7 +13,7 @@
 ACollidableActor::ACollidableActor()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComponent");
 	RootComponent = StaticMeshComponent;
@@ -37,13 +37,6 @@ void ACollidableActor::BeginPlay()
 {
 	Super::BeginPlay();
 	
-}
-
-// Called every frame
-void ACollidableActor::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
 }
 
 void ACollidableActor::NotifyActorBeginOverlap(AActor* OtherActor)

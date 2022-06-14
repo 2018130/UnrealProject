@@ -25,6 +25,26 @@
 				"Mac",
 				"Linux"
 			]
+		},
+		{
+			"Name": "GameplayInsights",
+			"Enabled": true
+		},
+		{
+			"Name": "TraceSourceFilters",
+			"Enabled": true
+		},
+		{
+			"Name": "NetworkPredictionInsights",
+			"Enabled": true
+		},
+		{
+			"Name": "RenderGraphInsights",
+			"Enabled": true
+		},
+		{
+			"Name": "SlateInsights",
+			"Enabled": true
 		}
 	]
 }
