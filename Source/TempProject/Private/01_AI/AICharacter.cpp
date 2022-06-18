@@ -173,7 +173,7 @@ void AAICharacter::StopFrozen()
 {
 	if(!GetMesh()->GetAnimInstance()->Montage_IsPlaying(Hit_ReactMontage))
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 700;
+		GetCharacterMovement()->MaxWalkSpeed = 800;
 	}
 }
 

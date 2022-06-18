@@ -63,5 +63,6 @@ public:
 	float GetGI_MaxMP() { return GI_MaxMP; }
 	float GetGI_Damage() { return GI_Damage; }
 
+	UFUNCTION(BlueprintCallable)
 	AMovablePlayerCharacter* GetPlayer() { return Player; }
 };

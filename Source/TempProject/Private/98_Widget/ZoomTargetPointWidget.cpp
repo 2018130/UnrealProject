@@ -10,13 +10,8 @@
 
 void UZoomTargetPointWidget::Spread()
 {
-	if(CanvasPanel_Panel != nullptr && Image_Down != nullptr && Image_Left != nullptr &&
-		Image_Right != nullptr && Image_Up != nullptr)
+	if(Converge != nullptr)
 	{
-		auto DownSlot = Cast<UCanvasPanelSlot>(Image_Down->Slot.Get());
-		FVector2D DownVector = DownSlot->GetAlignment();
-		DownVector.Y += 25;
-		UKismetSystemLibrary::PrintString(this, DownVector.ToString());
-		DownSlot->SetAlignment(DownVector);
+		PlayAnimation(Converge);
 	}
 }

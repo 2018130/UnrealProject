@@ -248,7 +248,8 @@ void AMovablePlayerCharacter::Shoot()
 		FVector StartVector, EndVector;
 		if (ZoominComponent->IsZoomMode()) {
 			StartVector = GetFollowCamera()->GetComponentLocation();
-			FVector Vec = FRotationMatrix(FRotator(Con->GetControlRotation().Pitch, Con->GetControlRotation().Yaw, Con->GetControlRotation().Roll)).GetUnitAxis(EAxis::X);
+			float RandRate = FMath::RandRange(-RandCorrectRate, RandCorrectRate);
+			FVector Vec = FRotationMatrix(FRotator(Con->GetControlRotation().Pitch + RandRate, Con->GetControlRotation().Yaw + RandRate, Con->GetControlRotation().Roll)).GetUnitAxis(EAxis::X);
 			EndVector = Vec * Range + StartVector;
 		}
 		else
@@ -410,7 +411,7 @@ float AMovablePlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const
 
 	if(HP <= 0)
 	{
-		UGameplayStatics::OpenLevel(this, "Scene_Level1");
+		UGameplayStatics::OpenLevel(this, "Template_Default");
 	}
 
 	return Value;

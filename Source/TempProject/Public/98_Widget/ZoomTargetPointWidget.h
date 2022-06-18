@@ -15,15 +15,15 @@ class TEMPPROJECT_API UZoomTargetPointWidget : public UUserWidget
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(VisibleAnywhere)
-		class UCanvasPanel* CanvasPanel_Panel;
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(Transient, meta = (BindWidgetAnim))
+		UWidgetAnimation* Converge;
+	UPROPERTY(EditAnywhere)
 		class UImage* Image_Up;
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 		class UImage* Image_Down;
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 		class UImage* Image_Left;
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 		class UImage* Image_Right;
 
 public:

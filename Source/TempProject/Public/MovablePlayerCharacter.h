@@ -30,6 +30,9 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere)
+		float RandCorrectRate;
+
+	UPROPERTY(EditAnywhere)
 		class UAnimMontage* AttackMontage;
 	UPROPERTY(EditAnywhere)
 		float LagSpeed;

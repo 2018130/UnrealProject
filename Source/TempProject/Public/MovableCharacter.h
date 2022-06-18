@@ -30,15 +30,15 @@ protected:
 	UPROPERTY(EditAnywhere)
 		UChildActorComponent* WeaponActorComponent;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 		float HP;
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 		float MaxHP;
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 		float MP;
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 		float MaxMP;
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 		float Damage;
 public:
 
