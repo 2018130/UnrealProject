@@ -23,8 +23,7 @@ void UMyGameInstance::Init()
 	GI_Damage = 20;
 }
 
-FGameInstancePIEResult UMyGameInstance::InitializeForPlayInEditor(int32 PIEInstanceIndex,
-                                                                  const FGameInstancePIEParameters& Params)
+FGameInstancePIEResult UMyGameInstance::InitializeForPlayInEditor(int32 PIEInstanceIndex, const FGameInstancePIEParameters& Params)
 {
 	GI_Score = 0;
 	GI_BulletCount = 0;

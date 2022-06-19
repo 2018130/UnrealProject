@@ -42,4 +42,12 @@ public:
 	UZoomTargetPointWidget* GetZoomTargetPointWidget() { return ZoomTargetPointWidget; }
 
 	UTimerUserWidget* GetTimerWidget() { return TimerWidget; }
+
+	UFUNCTION(BlueprintCallable)
+		void AsyncLevelLoad(const FString& LevelDir, const FString& LevelName);
+
+
+private:
+
+	void AsyncLevelLoadFinished(const FString& LevelName);
 };

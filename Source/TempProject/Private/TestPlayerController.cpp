@@ -8,6 +8,7 @@
 #include "98_Widget/MainWidget.h"
 #include "98_Widget/TimerUserWidget.h"
 #include "98_Widget/ZoomTargetPointWidget.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 void ATestPlayerController::OnPossess(APawn* InPawn)
@@ -45,7 +46,6 @@ void ATestPlayerController::OnPossess(APawn* InPawn)
 				{
 					GI->SetPlayer(player);
 					player->InitGIVariableToLocal();
-					UKismetSystemLibrary::PrintString(this, "GI is not nullptr" + FString::FormatAsNumber(player->GetHP()));
 				}
 			}
 		}
@@ -55,5 +55,21 @@ void ATestPlayerController::OnPossess(APawn* InPawn)
 void ATestPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void ATestPlayerController::AsyncLevelLoad(const FString& LevelDir, const FString& LevelName)
+{
+	LoadPackageAsync(LevelDir + LevelName, FLoadPackageAsyncDelegate::CreateLambda([=](const FName& PackageName, UPackage* LoadPackage, EAsyncLoadingResult::Type Result)
+		{
+			if (Result == EAsyncLoadingResult::Succeeded)
+			{
+				AsyncLevelLoadFinished(LevelName);
+			}
+		}),0,PKG_ContainsMap);
+}
+
+void ATestPlayerController::AsyncLevelLoadFinished(const FString& LevelName)
+{
+	UGameplayStatics::OpenLevel(this, "ElvenRuins");
 }
 
