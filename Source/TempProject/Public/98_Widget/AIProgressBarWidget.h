@@ -19,6 +19,11 @@ protected:
 	class UProgressBar* ProgressBar_AI;
 
 public:
+	UProgressBar* GetProgressBar_AI() { return ProgressBar_AI; }
 
 	void SetProgressBar(float Value);
+
+	void DrawColor(FLinearColor Color);
+
+	void DrawBackColor();
 };

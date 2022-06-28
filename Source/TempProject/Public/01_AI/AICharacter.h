@@ -91,4 +91,8 @@ public:
 	void Stun();
 
 	void StunEnd();
+
+	void CriticalHit();
+
+	void DrawBackHPWidget();
 };

@@ -4,6 +4,7 @@
 #include "TestPlayerController.h"
 
 #include "MovablePlayerCharacter.h"
+#include "01_AI/AICharacter.h"
 #include "03_GameInstance/MyGameInstance.h"
 #include "98_Widget/MainWidget.h"
 #include "98_Widget/TimerUserWidget.h"

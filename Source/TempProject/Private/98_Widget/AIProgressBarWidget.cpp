@@ -10,3 +10,13 @@ void UAIProgressBarWidget::SetProgressBar(float Value)
 {
 	ProgressBar_AI->SetPercent(Value);
 }
+
+void UAIProgressBarWidget::DrawColor(FLinearColor Color)
+{
+	ProgressBar_AI->SetFillColorAndOpacity(Color);
+}
+
+void UAIProgressBarWidget::DrawBackColor()
+{
+	ProgressBar_AI->SetFillColorAndOpacity(FLinearColor::Red);
+}

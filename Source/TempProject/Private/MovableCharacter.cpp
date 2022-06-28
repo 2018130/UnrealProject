@@ -14,7 +14,7 @@ AMovableCharacter::AMovableCharacter()
 
 	WeaponActorComponent = CreateDefaultSubobject<UChildActorComponent>(TEXT("WeaponActorComponent"));
 	WeaponActorComponent->SetupAttachment(GetMesh(), "WeaponSocket");
-	
+
 }
 
 // Called when the game starts or when spawned

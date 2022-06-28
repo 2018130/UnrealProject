@@ -14,6 +14,7 @@
 #include "98_Widget/AIProgressBarWidget.h"
 #include "98_Widget/MainWidget.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/ProgressBar.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -25,6 +26,7 @@ AAICharacter::AAICharacter()
 	PrimaryActorTick.bCanEverTick = false;
 
 	GetCapsuleComponent()->SetCollisionProfileName("EnemyPreset");
+	GetMesh()->SetCollisionProfileName("EnemyPreset");
 
 	Dying = false;
 
@@ -199,3 +201,20 @@ void AAICharacter::StunEnd()
 		GetController<AAIController>()->RunBehaviorTree(BehaviorTree);
 	}
 }
+
+void AAICharacter::CriticalHit()
+{
+	FLinearColor Color = FColor::Purple;
+	Cast<UAIProgressBarWidget>(HPBarWidgetComp->GetWidget())->DrawColor(Color);
+
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AAICharacter::DrawBackHPWidget, 1.0f);
+}
+
+void AAICharacter::DrawBackHPWidget()
+{
+	Cast<UAIProgressBarWidget>(HPBarWidgetComp->GetWidget())->DrawBackColor();
+}
+
+
+
