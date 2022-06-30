@@ -262,9 +262,8 @@ void AMovablePlayerCharacter::Shoot()
 		}
 
 		FHitResult Hit;
-		if (GetWorld()->LineTraceSingleByChannel(Hit, StartVector, EndVector, ECC_Visibility))
+		if (UKismetSystemLibrary::LineTraceSingleForObjects(this, StartVector, EndVector, ObjectType, false, TArray<AActor*>(), EDrawDebugTrace::None, Hit, true))
 		{
-			UKismetSystemLibrary::PrintString(this, Hit.BoneName.ToString());
 			if (ShootPointParticle != nullptr)
 			{
 				UGameplayStatics::SpawnEmitterAtLocation(this, ShootPointParticle, Hit.Location);
@@ -437,14 +436,13 @@ void AMovablePlayerCharacter::Ability_Stun()
 
 			if (UKismetSystemLibrary::SphereTraceMultiForObjects(this, GetActorLocation(),
 				EndVector, 800, ObjectTypeQuery, false,
-				TArray<AActor*>(), EDrawDebugTrace::ForDuration,
+				TArray<AActor*>(), EDrawDebugTrace::None,
 				Hits, true))
 			{
 				for (int32 i = 0; i < Hits.Num(); i++)
 				{
 					if (Hits[i].GetActor()->IsA<AAICharacter>())
 					{
-						UKismetSystemLibrary::PrintString(this, Hits[i].GetActor()->GetName());
 						auto AI = Cast<AAICharacter>(Hits[i].GetActor());
 
 						AI->Stun();

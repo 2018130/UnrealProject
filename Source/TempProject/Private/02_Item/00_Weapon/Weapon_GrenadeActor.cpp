@@ -27,7 +27,8 @@ void AWeapon_GrenadeActor::Explosion()
 {
 	TArray<FHitResult> Hits;
 
-	if(UKismetSystemLibrary::SphereTraceMultiForObjects(this, GetActorLocation(), GetActorForwardVector() + GetActorLocation(), 300.f, ObjectType, false,TArray<AActor*>(), EDrawDebugTrace::ForDuration,
+	if(UKismetSystemLibrary::SphereTraceMultiForObjects(this, GetActorLocation(), GetActorForwardVector() + GetActorLocation(), 300.f,
+		ObjectType, false,TArray<AActor*>(), EDrawDebugTrace::None,
 		Hits,  true))
 	{
 		for(int32 i = 0; i < Hits.Num(); i++)

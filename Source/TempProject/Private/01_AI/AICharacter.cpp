@@ -98,6 +98,7 @@ float AAICharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 			Dying = true;
 			GetCapsuleComponent()->SetCollisionProfileName("Spectator");
 			GetCharacterMovement()->StopActiveMovement();
+			IsAttacking = false;
 
 			auto GI = Cast<UMyGameInstance>(GetGameInstance());
 			if(GI != nullptr)
